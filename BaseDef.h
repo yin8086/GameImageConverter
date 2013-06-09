@@ -1,0 +1,12 @@
+#ifndef BASEDEF_H
+#define BASEDEF_H
+
+enum {
+    SUCC_STATUS,
+    ERR_NORMAL,
+    ERR_UNKNOWN_FORM,
+    ERR_NOT_IMAGE,
+    ERR_INVALID_FILE,
+    ERR_NOT_EXIST
+};
+#endif // BASEDEF_H
