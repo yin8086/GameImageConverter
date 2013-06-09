@@ -28,9 +28,9 @@ SOURCES += main.cpp \
     BufferParser/ARGB8888BufParser.cpp \
     BufferParser/ARGB4444BufParser.cpp \
     BufferParser/PVRCT4BufParser.cpp \
-    InParse.cpp \
     InterPic.cpp \
-    InParserFac.cpp
+    InParserFac.cpp \
+    InParse.cpp
 
 HEADERS += \
     ThreadWorker.h \

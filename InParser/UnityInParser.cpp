@@ -18,6 +18,7 @@ UnityInParser::~UnityInParser() {
     m_ptBufFac = NULL;
 }
 
+
 QString UnityInParser::getPixels(unsigned char *&rpDst) {
     QString type;
 

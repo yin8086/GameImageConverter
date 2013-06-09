@@ -1,6 +1,7 @@
 #ifndef INTERPIC_H
 #define INTERPIC_H
 #include <QtCore>
+#include "InParse.h"
 class InterPic {
 
     unsigned char *m_pcPixelBuf;
@@ -10,16 +11,20 @@ class InterPic {
     int m_iHeight;
     bool m_bIndex;
 
-    FileInParser *m_ptInParser;
+    AbstractInParser *m_ptInParser;
     FileOutParser *m_ptOutParser;
     ImageFilter *m_ptFilter;
 
 public:
-    InterPic(int w, int h, uchar *pix, uchar *pal);
+    InterPic(){}
     int process(const QString& inFile);
+    int construct(const QString& fName);
+    int parse();
+    int output();
     ~InterPic();
-
 private:
+    int errDeal();
+
 
 
 };
