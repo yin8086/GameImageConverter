@@ -5,6 +5,9 @@
 #include "ThreadWorker.h"
 #include "InParse.h"
 #include "InParserFac.h"
+#include "FilterFac.h"
+#include "OutParserFac.h"
+
 int ThreadWorker::work() {
     QList<QRunnable *> runList;
 
@@ -22,6 +25,7 @@ int ThreadWorker::work() {
 
     settings.setValue("InType", iType);
     settings.setValue("OutType", oType);
+    return 0;
 }
 
 void ThreadWorker::getFiles() {
@@ -37,27 +41,30 @@ void ThreadWorker::getFiles() {
 }
 
 
-void MyRun::createPic() {
-    AbstractInParser* inP = m_inFac.createInParser(m_iInType);
-    m_ptInterPic = inP->createInterPic(m_sFName);
-    //m_ptInterPic->m_ptFilter = m_filterFac.create....;
-
-    // if iType == ?
-    // fileIn =
-    // filter =
-    // if oType == ?
-    // fileOut=
-}
 
 
 void MyRun::run() {
     InParserFactory inFac;
+    FilterFactory fFac;
+    OutParserFactory oPFac;
+
     AbstractInParser* inP = inFac.createInParser(m_iInType);
-    m_ptInterPic->setInParser(inP);
-    m_ptInterPic->construct(m_sFName);
+    AbstractImageFilter *inF = fFac.createFilter(m_iInType, m_iOutType);
+    AbstractOutParser *inO = oPFac.createOutParser(m_iOutType);
+
+    if (inP && inF && inO) {
+        m_ptInterPic->setInParser(inP);
+        m_ptInterPic->construct(m_sFName);
+
+        m_ptInterPic->setFilter(inF);
+        m_ptInterPic->filter();
+
+        m_ptInterPic->setOutParser(inO);
+        m_ptInterPic->output(m_sFName);
+
+    }
 
     delete inP;
-    // parseIn
-    // filter
-    // parseOut
+    delete inF;
+    delete inO;
 }

@@ -11,7 +11,9 @@
 #include "BufferParser/RGBA4444BufParser.h"
 #include "BufferParser/RGBA8888BufParser.h"
 
-AbstractBufferParser* AbstractBufParseFactory::createBufParser(const QString &type) {
+
+
+AbstractBufferParser* NormalBufParserFac::createBufParser(const QString &type) {
     if(type == "Alpha8") {
         return new AlphaBufParser();
     }

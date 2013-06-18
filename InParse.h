@@ -1,7 +1,7 @@
 #ifndef INPARSE_H
 #define INPARSE_H
 #include <QtCore>
-#include "InterPic.h"
+
 class AbstractInParser {
 protected:
     QFile m_ptOrigF;
@@ -17,6 +17,7 @@ public:
     virtual QString getPixels(unsigned char *&rpDst) = 0;
     virtual void parsePixels(unsigned char *pSrc, unsigned char *pDst, const QString& mode) = 0;
     virtual void getPals(unsigned char *&rpDst) = 0;
+    virtual ~AbstractInParser(){}
 };
 
 

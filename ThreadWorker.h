@@ -3,7 +3,7 @@
 
 #include <QStringList>
 #include "InterPic.h"
-#include "InParserFac.h"
+
 
 
 class MyRun : public QRunnable {
@@ -15,7 +15,6 @@ class MyRun : public QRunnable {
 public:
     MyRun(int iMode, int oMode, const QString &fName):
         QRunnable(),m_iInType(iMode), m_iOutType(oMode), m_sFName(fName){}
-    void createPic();
     void run();
 };
 

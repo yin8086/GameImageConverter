@@ -8,7 +8,7 @@
 UnityInParser::UnityInParser():AbstractInParser() {
     m_ptBufFac = new NormalBufParserFac();
     m_ptParser = NULL;
-    //m_defaultBpp = 0;
+    m_iDefault16bpp = 0;
 }
 
 UnityInParser::~UnityInParser() {
@@ -25,14 +25,14 @@ QString UnityInParser::getPixels(unsigned char *&rpDst) {
 
     QString type;
 
-    QDataStream br(&srcf);
+    QDataStream br(&m_ptOrigF);
     br.setByteOrder(QDataStream::LittleEndian);
     quint32 len;
     br>>len;
 
-    srcf.seek(srcf.pos()+len);
-    if(srcf.pos()%4 != 0) {
-        srcf.seek((srcf.pos()/4+1)*4);
+    m_ptOrigF.seek(m_ptOrigF.pos()+len);
+    if(m_ptOrigF.pos()%4 != 0) {
+        m_ptOrigF.seek((m_ptOrigF.pos()/4+1)*4);
     }
 
     quint32 imageDataSize;
@@ -40,23 +40,23 @@ QString UnityInParser::getPixels(unsigned char *&rpDst) {
     br>>m_iWidth>>m_iHeight>>imageDataSize>>pixelSize;
 
     try {
-        if(srcf.size() > imageDataSize + 20 && imageDataSize > 0) {
+        if(m_ptOrigF.size() > imageDataSize + 20 && imageDataSize > 0) {
             if ( (1 <= pixelSize && pixelSize <=7 && pixelSize != 6) ||
                     ( pixelSize == 0x20 ||pixelSize == 0x21) ){
 
-                quint32 imageSize = width*height*pixelSize;
+                quint32 imageSize = m_iWidth*m_iHeight*pixelSize;
 
                 if(pixelSize == 1) {
                     type = "Alpha8";
                 }
                 else if(pixelSize == 2) {
-                    if(m_default16bpp == 0) {
+                    if(m_iDefault16bpp == 0) {
                         type = "RGBA4444";
                     }
-                    else if(m_default16bpp == 1) {
+                    else if(m_iDefault16bpp == 1) {
                         type = "ARGB1555";
                     }
-                    else if(m_default16bpp == 2) {
+                    else if(m_iDefault16bpp == 2) {
                         type = "ARGB4444";
                     }
 
@@ -69,21 +69,21 @@ QString UnityInParser::getPixels(unsigned char *&rpDst) {
                 }
                 else if(pixelSize == 5) {
                     type = "ARGB8888";
-                    imageSize = width*height*4;
+                    imageSize = m_iWidth*m_iHeight*4;
                 }
                 else if(pixelSize == 7) {
                     type = "RGB565";
-                    imageSize = width*height*2;
+                    imageSize = m_iWidth*m_iHeight*2;
                 }
                 else if(pixelSize == 0x21 || pixelSize == 0x20) {
                     type = "PVRTC4";
-                    imageSize = (width*height)>>1;
+                    imageSize = (m_iWidth*m_iHeight)>>1;
                 }
 
-                srcf.seek(srcf.size() - imageDataSize);
+                m_ptOrigF.seek(m_ptOrigF.size() - imageDataSize);
 
                 rpDst = new uchar[imageSize];
-                br.readRawData(rpDst,imageSize);
+                br.readRawData((char *)rpDst,imageSize);
                 m_iState = SUCC_STATUS;
 
             }
@@ -120,7 +120,7 @@ void UnityInParser::parsePixels(unsigned char *pSrc, unsigned char *pDst, const 
     }
     else {
         m_ptParser = m_ptBufFac->createBufParser(mode);
-        m_ptParser->parse(pSrc, pDst, width, height);
+        m_ptParser->parse(pSrc, pDst, m_iWidth, m_iHeight);
         m_iState = SUCC_STATUS;
     }
 }

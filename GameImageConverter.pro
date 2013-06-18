@@ -15,6 +15,8 @@ QT += widgets
 TEMPLATE = app
 
 INCLUDEPATH += ./include/
+LIBS += -L../GameImageConverter/lib -lpvrtc
+
 SOURCES += main.cpp \
     ThreadWorker.cpp \
     InParser/UnityInParser.cpp \
@@ -30,7 +32,11 @@ SOURCES += main.cpp \
     BufferParser/PVRCT4BufParser.cpp \
     InterPic.cpp \
     InParserFac.cpp \
-    InParse.cpp
+    InParse.cpp \
+    ImageFilter/UnityImageFilter.cpp \
+    FilterFac.cpp \
+    OutParser/PNGOutParser.cpp \
+    OutParserFac.cpp
 
 HEADERS += \
     ThreadWorker.h \
@@ -51,4 +57,9 @@ HEADERS += \
     BufferParser/ARGB4444BufParser.h \
     BufferParser/PVRCT4BufParser.h \
     BaseDef.h \
-    InParserFac.h
+    InParserFac.h \
+    AbstractFilter.h \
+    ImageFilter/UnityImageFilter.h \
+    FilterFac.h \
+    OutParser/PNGOutParser.h \
+    OutParserFac.h

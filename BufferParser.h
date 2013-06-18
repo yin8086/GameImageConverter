@@ -9,6 +9,7 @@ public:
                           unsigned char *pDst,
                           int width,
                           int height) = 0;
+    virtual ~AbstractBufferParser(){}
 };
 
 #endif // BUFFERPARSER_H

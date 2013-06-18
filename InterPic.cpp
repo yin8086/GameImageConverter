@@ -10,9 +10,9 @@ int InterPic::errDeal() {
 int InterPic::construct(const QString &fName) {
     m_ptInParser->openFile(fName);
     uchar* tmpBuf = NULL;
-    QString mode = m_ptInParser->getPixels(tmpBuf);
+    m_sMode = m_ptInParser->getPixels(tmpBuf);
     m_ptInParser->getPals(m_pcPalBuf);
-    m_ptInParser->parsePixels(tmpBuf, m_pcPixelBuf, mode);
+    m_ptInParser->parsePixels(tmpBuf, m_pcPixelBuf, m_sMode);
     m_ptInParser->getWH(m_iWidth, m_iHeight);
 
     if(!m_pcPalBuf)
@@ -22,12 +22,15 @@ int InterPic::construct(const QString &fName) {
     return errDeal();
 }
 
-int parse();
-int output();
-
-int InterPic::process(const QString& inFile) {
-
+int InterPic::filter() {
+    uchar* tarBuf = NULL;
+    return m_ptFilter->filter(tarBuf, m_pcPixelBuf, m_iWidth, m_iHeight);
 }
+
+int InterPic::output(const QString& fName) {
+    return m_ptOutParser->write(fName + m_sMode + ".png", m_pcPixelBuf, m_iWidth, m_iHeight);
+}
+
 
 InterPic::~InterPic() {
     if(!m_pcPalBuf) {

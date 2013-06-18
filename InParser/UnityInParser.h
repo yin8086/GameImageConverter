@@ -7,6 +7,7 @@
 class UnityInParser: public AbstractInParser {
     AbstractBufParseFactory *m_ptBufFac;
     AbstractBufferParser *m_ptParser;
+    int m_iDefault16bpp;
 public:
     UnityInParser();
 
