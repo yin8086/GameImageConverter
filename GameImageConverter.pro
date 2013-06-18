@@ -36,7 +36,8 @@ SOURCES += main.cpp \
     ImageFilter/UnityImageFilter.cpp \
     FilterFac.cpp \
     OutParser/PNGOutParser.cpp \
-    OutParserFac.cpp
+    OutParserFac.cpp \
+    ThreadLogger.cpp
 
 HEADERS += \
     ThreadWorker.h \
@@ -62,4 +63,5 @@ HEADERS += \
     ImageFilter/UnityImageFilter.h \
     FilterFac.h \
     OutParser/PNGOutParser.h \
-    OutParserFac.h
+    OutParserFac.h \
+    ThreadLogger.h

@@ -1,8 +1,10 @@
-#include <QCoreApplication>
+#include <QApplication>
+#include "ThreadWorker.h"
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication a(argc, argv);
-    
-    return a.exec();
+    QApplication a(argc, argv);
+    ThreadWorker tw;
+    tw.getFiles();
+    return tw.work();
 }

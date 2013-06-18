@@ -2,33 +2,41 @@
 #include "InterPic.h"
 #include "BaseDef.h"
 
-int InterPic::errDeal() {
-    m_ptInParser->closeFile();
-    return m_ptInParser->state();
-}
 
-int InterPic::construct(const QString &fName) {
+void InterPic::construct(const QString &fName) {
     m_ptInParser->openFile(fName);
+
     uchar* tmpBuf = NULL;
     m_sMode = m_ptInParser->getPixels(tmpBuf);
     m_ptInParser->getPals(m_pcPalBuf);
-    m_ptInParser->parsePixels(tmpBuf, m_pcPixelBuf, m_sMode);
     m_ptInParser->getWH(m_iWidth, m_iHeight);
+    if(m_iWidth != -1 && m_iHeight != -1) {
+        m_pcPixelBuf = new unsigned char [m_iWidth * m_iHeight * 4];
+        m_ptInParser->parsePixels(tmpBuf, m_pcPixelBuf, m_sMode);
+    }
+
 
     if(!m_pcPalBuf)
         m_bIndex = false;
     else
         m_bIndex = true;
-    return errDeal();
+
+    m_ptInParser->closeFile();
+    m_iState = m_ptInParser->state();
 }
 
-int InterPic::filter() {
+void InterPic::filter() {
+    if(m_iState != SUCC_STATUS)
+        return;
     uchar* tarBuf = NULL;
-    return m_ptFilter->filter(tarBuf, m_pcPixelBuf, m_iWidth, m_iHeight);
+    m_iState = m_ptFilter->filter(tarBuf, m_pcPixelBuf, m_iWidth, m_iHeight);
 }
 
-int InterPic::output(const QString& fName) {
-    return m_ptOutParser->write(fName + m_sMode + ".png", m_pcPixelBuf, m_iWidth, m_iHeight);
+void InterPic::output(const QString& fName) {
+    if(m_iState != SUCC_STATUS)
+        return;
+    QString newName = QObject::tr("%1.%2.png").arg(fName).arg(m_sMode);
+    m_iState = m_ptOutParser->write(newName, m_pcPixelBuf, m_iWidth, m_iHeight);
 }
 
 

@@ -14,22 +14,25 @@ class InterPic {
     bool m_bIndex;
     QString m_sMode;
 
+    int m_iState;
+
     AbstractInParser *m_ptInParser;
     AbstractOutParser *m_ptOutParser;
     AbstractImageFilter *m_ptFilter;
 
 public:
-    InterPic(){}
+    InterPic():m_pcPixelBuf(NULL), m_pcPalBuf(NULL),
+        m_iWidth(-1), m_iHeight(-1), m_bIndex(false),
+        m_iState(0){}
 
     void setInParser(AbstractInParser *rhs) {m_ptInParser = rhs;}
     void setFilter(AbstractImageFilter *rhs) {m_ptFilter = rhs;}
     void setOutParser(AbstractOutParser *rhs) {m_ptOutParser =rhs;}
-    int construct(const QString& fName);
-    int filter();
-    int output(const QString& fName);
+    void construct(const QString& fName);
+    void filter();
+    void output(const QString& fName);
+    int state() const {return m_iState;}
     ~InterPic();
-private:
-    int errDeal();
 };
 
 #endif // INTERPIC_H

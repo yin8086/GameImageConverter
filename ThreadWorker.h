@@ -10,7 +10,7 @@ class MyRun : public QRunnable {
     int m_iInType;
     int m_iOutType;
     QString m_sFName;
-    InterPic *m_ptInterPic;
+    InterPic m_ptInterPic;
 
 public:
     MyRun(int iMode, int oMode, const QString &fName):

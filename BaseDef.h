@@ -9,4 +9,5 @@ enum {
     ERR_INVALID_FILE,
     ERR_NOT_EXIST
 };
+
 #endif // BASEDEF_H

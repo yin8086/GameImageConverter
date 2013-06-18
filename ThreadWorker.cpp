@@ -2,11 +2,13 @@
 #include <QRunnable>
 #include <QFileDialog>
 #include <QSettings>
+#include "BaseDef.h"
 #include "ThreadWorker.h"
 #include "InParse.h"
 #include "InParserFac.h"
 #include "FilterFac.h"
 #include "OutParserFac.h"
+#include "ThreadLogger.h"
 
 int ThreadWorker::work() {
     QList<QRunnable *> runList;
@@ -37,6 +39,9 @@ void ThreadWorker::getFiles() {
                 QObject::tr("Select one or more files to open"),
                 settings.value("dir", QDir::current().absolutePath()).toString(),
                 QObject::tr("All files (*.*)"));
+    g_cThreadLog.threadPrintf(QString("Directory: %1\n").
+                              arg(m_asFileList[0].left(m_asFileList[0].lastIndexOf('/')))
+                              );
     settings.setValue("dir",m_asFileList[0].left(m_asFileList[0].lastIndexOf('/')));
 }
 
@@ -52,17 +57,27 @@ void MyRun::run() {
     AbstractImageFilter *inF = fFac.createFilter(m_iInType, m_iOutType);
     AbstractOutParser *inO = oPFac.createOutParser(m_iOutType);
 
+    QString logMessage = m_sFName.mid(m_sFName.lastIndexOf('/') + 1);
+    logMessage += ":    ";
+    int runStatus = SUCC_STATUS;
+
     if (inP && inF && inO) {
-        m_ptInterPic->setInParser(inP);
-        m_ptInterPic->construct(m_sFName);
+        m_ptInterPic.setInParser(inP);
+        m_ptInterPic.construct(m_sFName);
 
-        m_ptInterPic->setFilter(inF);
-        m_ptInterPic->filter();
+        m_ptInterPic.setFilter(inF);
+        m_ptInterPic.filter();
 
-        m_ptInterPic->setOutParser(inO);
-        m_ptInterPic->output(m_sFName);
+        m_ptInterPic.setOutParser(inO);
+        m_ptInterPic.output(m_sFName);
+
+        runStatus = m_ptInterPic.state();
 
     }
+    else
+        runStatus = ERR_NORMAL;
+
+    g_cThreadLog.threadPrintfId(logMessage, runStatus);
 
     delete inP;
     delete inF;
