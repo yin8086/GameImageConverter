@@ -6,12 +6,12 @@
 
 QT       += core
 
-QT       -= gui
+QT       += gui
 
 TARGET = GameImageConverter
 CONFIG   += console
 CONFIG   -= app_bundle
-
+QT += widgets
 TEMPLATE = app
 
 INCLUDEPATH += ./include/

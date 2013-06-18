@@ -13,12 +13,16 @@ int InterPic::construct(const QString &fName) {
         uchar* tmpBuf;
         QString mode = m_ptInParser->getPixels(tmpBuf);
         if(m_ptInParser->state() == SUCC_STATUS) {
+            int errCode = SUCC_STATUS;
             m_ptInParser->getPals(m_pcPalBuf);
             if(m_ptInParser->state() == SUCC_STATUS) {
                 m_ptInParser->parsePixels(tmpBuf, m_pcPixelBuf, mode);
             }
             else
-                return errDeal();
+                errCode = errDeal();
+            delete[] tmpBuf;
+            if(errCode != SUCC_STATUS)
+                return errCode;
         }
         else
             return errDeal();

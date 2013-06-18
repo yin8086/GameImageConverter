@@ -17,6 +17,8 @@ class InterPic {
 
 public:
     InterPic(){}
+
+    void setInParser(AbstractInParser *rhs) {m_ptInParser = rhs;}
     int process(const QString& inFile);
     int construct(const QString& fName);
     int parse();
