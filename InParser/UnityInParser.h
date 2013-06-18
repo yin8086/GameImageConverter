@@ -11,8 +11,8 @@ public:
     UnityInParser();
 
     QString getPixels(unsigned char *&rpDst);
-    int parsePixels(unsigned char *pSrc, unsigned char *pDst, const QString &mode);
-    int getPals(unsigned char *&rpDst);
+    void parsePixels(unsigned char *pSrc, unsigned char *pDst, const QString &mode);
+    void getPals(unsigned char *&rpDst);
     ~UnityInParser();
 };
 

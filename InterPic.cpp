@@ -9,31 +9,12 @@ int InterPic::errDeal() {
 
 int InterPic::construct(const QString &fName) {
     m_ptInParser->openFile(fName);
-    if(m_ptInParser->state() == SUCC_STATUS) {
-        uchar* tmpBuf;
-        QString mode = m_ptInParser->getPixels(tmpBuf);
-        if(m_ptInParser->state() == SUCC_STATUS) {
-            int errCode = SUCC_STATUS;
-            m_ptInParser->getPals(m_pcPalBuf);
-            if(m_ptInParser->state() == SUCC_STATUS) {
-                m_ptInParser->parsePixels(tmpBuf, m_pcPixelBuf, mode);
-            }
-            else
-                errCode = errDeal();
-            delete[] tmpBuf;
-            if(errCode != SUCC_STATUS)
-                return errCode;
-        }
-        else
-            return errDeal();
-    }
-    else
-        return errDeal();
-    if(m_ptInParser->state() == SUCC_STATUS) {
-        m_ptInParser->getWH(m_iWidth, m_iHeight);
-    }
-    else
-        return errDeal();
+    uchar* tmpBuf = NULL;
+    QString mode = m_ptInParser->getPixels(tmpBuf);
+    m_ptInParser->getPals(m_pcPalBuf);
+    m_ptInParser->parsePixels(tmpBuf, m_pcPixelBuf, mode);
+    m_ptInParser->getWH(m_iWidth, m_iHeight);
+
     if(!m_pcPalBuf)
         m_bIndex = false;
     else

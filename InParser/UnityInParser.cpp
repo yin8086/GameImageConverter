@@ -20,6 +20,9 @@ UnityInParser::~UnityInParser() {
 
 
 QString UnityInParser::getPixels(unsigned char *&rpDst) {
+    if (m_iState != SUCC_STATUS)
+        return "";
+
     QString type;
 
     QDataStream br(&srcf);
@@ -96,19 +99,29 @@ QString UnityInParser::getPixels(unsigned char *&rpDst) {
         m_iState = ERR_INVALID_FILE;
     }
 
+    if(m_iState == SUCC_STATUS)
+        return type;
+    else
+        return "";
+
 }
 
-int UnityInParser::getPals(unsigned char *&rpDst) {
-   return 0;
+void UnityInParser::getPals(unsigned char *&rpDst) {
+    if (m_iState != SUCC_STATUS)
+        return;
+    rpDst = NULL;
 }
 
-int UnityInParser::parsePixels(unsigned char *pSrc, unsigned char *pDst, const QString &mode) {
-    if(!pSrc || m_iState > 0) {
-        m_iState = m_iState > 0 ? m_iState : ERR_NORMAL;
+void UnityInParser::parsePixels(unsigned char *pSrc, unsigned char *pDst, const QString &mode) {
+    if (m_iState != SUCC_STATUS)
+        return;
+    else if(!pSrc) {
+        m_iState = ERR_NORMAL;
     }
     else {
         m_ptParser = m_ptBufFac->createBufParser(mode);
         m_ptParser->parse(pSrc, pDst, width, height);
+        m_iState = SUCC_STATUS;
     }
 }
 

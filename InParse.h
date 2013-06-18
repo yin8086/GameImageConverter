@@ -9,13 +9,14 @@ protected:
     int m_iHeight;
     int m_iState;
 public:
-    int openFile(const QString& fName);
-    int closeFile();
+    AbstractInParser();
+    void openFile(const QString& fName);
+    void closeFile();
     int state();
     void getWH(int &width, int &height);
     virtual QString getPixels(unsigned char *&rpDst) = 0;
-    virtual int parsePixels(unsigned char *pSrc, unsigned char *pDst, const QString& mode) = 0;
-    virtual int getPals(unsigned char *&rpDst) = 0;
+    virtual void parsePixels(unsigned char *pSrc, unsigned char *pDst, const QString& mode) = 0;
+    virtual void getPals(unsigned char *&rpDst) = 0;
 };
 
 
