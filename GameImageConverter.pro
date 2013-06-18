@@ -37,7 +37,8 @@ SOURCES += main.cpp \
     FilterFac.cpp \
     OutParser/PNGOutParser.cpp \
     OutParserFac.cpp \
-    ThreadLogger.cpp
+    ThreadLogger.cpp \
+    InParser/PNGInParser.cpp
 
 HEADERS += \
     ThreadWorker.h \
@@ -64,4 +65,5 @@ HEADERS += \
     FilterFac.h \
     OutParser/PNGOutParser.h \
     OutParserFac.h \
-    ThreadLogger.h
+    ThreadLogger.h \
+    InParser/PNGInParser.h

@@ -7,5 +7,10 @@ public:
                   unsigned char *pDst,
                   int width,
                   int height);
+//    void invParse(unsigned char *pSrc,
+//                  unsigned char *pDst,
+//                  int width,
+//                  int height,
+//                  const QString& mode);
 };
 #endif // RGBA4444BUFPARSER_H

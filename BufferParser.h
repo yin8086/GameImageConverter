@@ -4,7 +4,9 @@ class AbstractBufferParser {
 public:
 //    virtual void invParse(unsigned char *pSrc,
 //                          unsigned char *pDst,
-//                          int bufSize) = 0;
+//                          int width,
+//                          int height,
+//                          const QString& mode) = 0;
     virtual QString parse(unsigned char *pSrc,
                           unsigned char *pDst,
                           int width,

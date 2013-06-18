@@ -8,7 +8,11 @@
 UnityInParser::UnityInParser():AbstractInParser() {
     m_ptBufFac = new NormalBufParserFac();
     m_ptParser = NULL;
-    m_iDefault16bpp = 0;
+
+    QSettings settings("GIConverter.ini", QSettings::IniFormat);
+    settings.setIniCodec("UTF-8");
+    m_iDefault16bpp = settings.value("Unity/Default16bpp", 0).toInt();
+    settings.setValue("Unity/Default16bpp", m_iDefault16bpp);
 }
 
 UnityInParser::~UnityInParser() {

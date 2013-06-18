@@ -12,3 +12,4 @@ QString AlphaBufParser::parse(unsigned char *pSrc, unsigned char *pDst, int widt
     }
     return "Alpha8";
 }
+

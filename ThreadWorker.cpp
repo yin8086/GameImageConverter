@@ -11,7 +11,6 @@
 #include "ThreadLogger.h"
 
 int ThreadWorker::work() {
-    QList<QRunnable *> runList;
 
     QSettings settings("GIConverter.ini", QSettings::IniFormat);
     settings.setIniCodec("UTF-8");
@@ -22,7 +21,6 @@ int ThreadWorker::work() {
         MyRun* tmpR=new MyRun(iType, oType, fn);
         tmpR->setAutoDelete(true);
         QThreadPool::globalInstance()->start(tmpR);
-        runList.append(tmpR);
     }
 
     settings.setValue("InType", iType);
@@ -39,10 +37,13 @@ void ThreadWorker::getFiles() {
                 QObject::tr("Select one or more files to open"),
                 settings.value("dir", QDir::current().absolutePath()).toString(),
                 QObject::tr("All files (*.*)"));
-    g_cThreadLog.threadPrintf(QString("Directory: %1\n").
-                              arg(m_asFileList[0].left(m_asFileList[0].lastIndexOf('/')))
-                              );
-    settings.setValue("dir",m_asFileList[0].left(m_asFileList[0].lastIndexOf('/')));
+    if(m_asFileList.size() > 0)
+    {
+        g_cThreadLog.threadPrintf(QString("Directory: %1\n").
+                                  arg(m_asFileList[0].left(m_asFileList[0].lastIndexOf('/')))
+                                  );
+        settings.setValue("dir",m_asFileList[0].left(m_asFileList[0].lastIndexOf('/')));
+    }
 }
 
 
