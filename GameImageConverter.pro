@@ -15,7 +15,7 @@ QT += widgets
 TEMPLATE = app
 
 INCLUDEPATH += ./include/
-LIBS += -L../GameImageConverter/lib -lpvrtc
+LIBS += -L../GameImageConverter/lib -lpvrtc -lsquish
 
 SOURCES += main.cpp \
     ThreadWorker.cpp \

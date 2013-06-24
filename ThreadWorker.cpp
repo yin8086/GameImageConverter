@@ -16,7 +16,9 @@ int ThreadWorker::work() {
     settings.setIniCodec("UTF-8");
     int iType = settings.value("InType", 0).toInt();
     int oType = settings.value("OutType", 1).toInt();
+    int threadNum = settings.value("Threads", 16).toInt();
 
+    QThreadPool::globalInstance()->setMaxThreadCount(threadNum);
     foreach(const QString &fn, m_asFileList) {
         MyRun* tmpR=new MyRun(iType, oType, fn);
         tmpR->setAutoDelete(true);
@@ -25,6 +27,7 @@ int ThreadWorker::work() {
 
     settings.setValue("InType", iType);
     settings.setValue("OutType", oType);
+    settings.setValue("Threads", threadNum);
     return 0;
 }
 
