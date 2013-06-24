@@ -46,7 +46,7 @@ QString UnityInParser::getPixels(unsigned char *&rpDst) {
     try {
         if(m_ptOrigF.size() > imageDataSize + 20 && imageDataSize > 0) {
             if ( (1 <= pixelSize && pixelSize <=7 && pixelSize != 6) ||
-                    ( pixelSize == 0x20 ||pixelSize == 0x21) ){
+                    ( pixelSize == 0x20 ||pixelSize == 0x21 || pixelSize == 0x0c) ){
 
                 quint32 imageSize = m_iWidth*m_iHeight*pixelSize;
 
@@ -78,6 +78,10 @@ QString UnityInParser::getPixels(unsigned char *&rpDst) {
                 else if(pixelSize == 7) {
                     type = "RGB565";
                     imageSize = m_iWidth*m_iHeight*2;
+                }
+                else if(pixelSize == 0x0c) {
+                    type = "DXT5";
+                    imageSize = imageDataSize;
                 }
                 else if(pixelSize == 0x21 || pixelSize == 0x20) {
                     type = "PVRTC4";

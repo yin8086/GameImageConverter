@@ -38,7 +38,8 @@ SOURCES += main.cpp \
     OutParser/PNGOutParser.cpp \
     OutParserFac.cpp \
     ThreadLogger.cpp \
-    InParser/PNGInParser.cpp
+    InParser/PNGInParser.cpp \
+    BufferParser/DXTBufParser.cpp
 
 HEADERS += \
     ThreadWorker.h \
@@ -66,4 +67,5 @@ HEADERS += \
     OutParser/PNGOutParser.h \
     OutParserFac.h \
     ThreadLogger.h \
-    InParser/PNGInParser.h
+    InParser/PNGInParser.h \
+    BufferParser/DXTBufParser.h
