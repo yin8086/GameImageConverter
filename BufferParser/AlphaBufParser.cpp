@@ -13,3 +13,11 @@ QString AlphaBufParser::parse(unsigned char *pSrc, unsigned char *pDst, int widt
     return "Alpha8";
 }
 
+void AlphaBufParser::invParse(unsigned char *pSrc,
+                              unsigned char *pDst,
+                              int width, int height) {
+    for(int i = 0, j = 0; i < width * height; i++, j += 4) {
+        pDst[i] = pSrc[j+3];
+    }
+
+}

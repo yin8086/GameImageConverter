@@ -14,3 +14,16 @@ QString RGBA4444BufParser::parse(unsigned char *pSrc, unsigned char *pDst, int w
     return "RGBA4444";
 }
 
+void RGBA4444BufParser::invParse(unsigned char *pSrc, unsigned char *pDst, int width, int height) {
+    quint16 pixelVal = 0;
+    quint16 r,g,b,a;
+    for(int i = 0, j = 0; i < (width * height) << 1; i += 2, j += 4) {
+        r = (pSrc[j+2]   * 15 + 127) / 255;
+        g = (pSrc[j+1] * 15 + 127) / 255;
+        b = (pSrc[j]  * 15 + 127) / 255;
+        a = (pSrc[j+3] * 15 + 127) / 255;
+        pixelVal=(r<<12)|(g<<8)|(b<<4)|a;
+        *(quint16*)(pDst+i) = pixelVal;
+    }
+
+}

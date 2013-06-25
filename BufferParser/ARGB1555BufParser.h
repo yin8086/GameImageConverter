@@ -7,11 +7,10 @@ public:
                   unsigned char *pDst,
                   int width,
                   int height);
-//    void invParse(unsigned char *pSrc,
-//                  unsigned char *pDst,
-//                  int width,
-//                  int height,
-//                  const QString& mode);
+    void invParse(unsigned char *pSrc,
+                  unsigned char *pDst,
+                  int width,
+                  int height);
 };
 
 #endif // ARGB1555BUFPARSER_H

@@ -15,5 +15,15 @@ QString DXTBufParser::parse(unsigned char *pSrc, unsigned char *pDst, int width,
     return "DXT5";
 }
 
+void DXTBufParser::invParse(unsigned char *pSrc, unsigned char *pDst, int width, int height) {
+    quint8 tmpBuf[width*height*4];
+    for(int i = 0; i < width*height*4; i+=4) {
+        tmpBuf[i] = pSrc[i+2];
+        tmpBuf[i+1] = pSrc[i+1];
+        tmpBuf[i+2] = pSrc[i];
+        tmpBuf[i+3] = pSrc[i+3];
+    }
+    squish::CompressImage(tmpBuf, width, height, pDst, squish::kDxt5);
+}
 
 

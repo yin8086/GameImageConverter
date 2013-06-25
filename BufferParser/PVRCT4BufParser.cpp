@@ -7,3 +7,7 @@ QString PVRCT4BufParser::parse(unsigned char *pSrc, unsigned char *pDst, int wid
     pvrtc_decompress(pDst, pSrc, width, height, 0, 1, 0);
     return "PVRTC4";
 }
+
+void PVRCT4BufParser::invParse(unsigned char *pSrc, unsigned char *pDst, int width, int height) {
+    pvrtc_compress(pSrc, pDst, width, height, 0, 1, 1, 0);
+}

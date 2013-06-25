@@ -8,8 +8,10 @@ public:
                   unsigned char *pDst,
                   int width,
                   int height);
-
-
+    void invParse(unsigned char *pSrc,
+                  unsigned char *pDst,
+                  int width,
+                  int height);
 
 };
 #endif // DXTBUFPARSER_H
