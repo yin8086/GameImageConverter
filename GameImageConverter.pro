@@ -19,7 +19,6 @@ LIBS += -L../GameImageConverter/lib -lpvrtc -lsquish
 
 SOURCES += main.cpp \
     ThreadWorker.cpp \
-    InParser/UnityInParser.cpp \
     BufferParser/AlphaBufParser.cpp \
     BufParserFac/NorBufParFac.cpp \
     BufferParser/RGBA4444BufParser.cpp \
@@ -32,21 +31,18 @@ SOURCES += main.cpp \
     BufferParser/PVRCT4BufParser.cpp \
     InterPic.cpp \
     InParserFac.cpp \
-    InParse.cpp \
     ImageFilter/UnityImageFilter.cpp \
     FilterFac.cpp \
-    OutParser/PNGOutParser.cpp \
     OutParserFac.cpp \
     ThreadLogger.cpp \
-    InParser/PNGInParser.cpp \
-    BufferParser/DXTBufParser.cpp
+    BufferParser/DXTBufParser.cpp \
+    IOParser.cpp \
+    IOParser/UnityIOParser.cpp \
+    IOParser/PNGIOParser.cpp
 
 HEADERS += \
     ThreadWorker.h \
     InterPic.h \
-    InParse.h \
-    OutParser.h \
-    InParser/UnityInParser.h \
     BufferParser.h \
     BufferParser/AlphaBufParser.h \
     BufParFactory.h \
@@ -64,8 +60,9 @@ HEADERS += \
     AbstractFilter.h \
     ImageFilter/UnityImageFilter.h \
     FilterFac.h \
-    OutParser/PNGOutParser.h \
     OutParserFac.h \
     ThreadLogger.h \
-    InParser/PNGInParser.h \
-    BufferParser/DXTBufParser.h
+    BufferParser/DXTBufParser.h \
+    IOParser.h \
+    IOParser/UnityIOParser.h \
+    IOParser/PNGIOParser.h
