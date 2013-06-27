@@ -4,10 +4,8 @@
 #include <QSettings>
 #include "BaseDef.h"
 #include "ThreadWorker.h"
-#include "InParse.h"
-#include "InParserFac.h"
+#include "IOParserFac.h"
 #include "FilterFac.h"
-#include "OutParserFac.h"
 #include "ThreadLogger.h"
 
 int ThreadWorker::work() {
@@ -53,13 +51,13 @@ void ThreadWorker::getFiles() {
 
 
 void MyRun::run() {
-    InParserFactory inFac;
+    IOParserFactory inFac;
     FilterFactory fFac;
-    OutParserFactory oPFac;
+    IOParserFactory oPFac;
 
-    AbstractInParser* inP = inFac.createInParser(m_iInType);
+    AbstractIOParser* inP = inFac.createIOParser(m_iInType);
     AbstractImageFilter *inF = fFac.createFilter(m_iInType, m_iOutType);
-    AbstractOutParser *inO = oPFac.createOutParser(m_iOutType);
+    AbstractIOParser *inO = oPFac.createIOParser(m_iOutType);
 
     QString logMessage = m_sFName.mid(m_sFName.lastIndexOf('/') + 1);
     logMessage += ":    ";

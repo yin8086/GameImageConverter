@@ -114,6 +114,11 @@ QString UnityIOParser::getPixels(unsigned char *&rpDst) {
 
 }
 
+void UnityIOParser::setPixels(unsigned char *pSrc) {
+
+}
+
+
 void UnityIOParser::getPals(unsigned char *&rpDst) {
     if (m_iState != SUCC_STATUS)
         return;
@@ -133,5 +138,8 @@ void UnityIOParser::parsePixels(unsigned char *pSrc, unsigned char *pDst, const 
     }
 }
 
+void UnityIOParser::invParsePixels(unsigned char *pSrc, unsigned char *&rpDst, const QString &mode) {
+
+}
 
 

@@ -36,7 +36,14 @@ void InterPic::output(const QString& fName) {
     if(m_iState != SUCC_STATUS)
         return;
     QString newName = QObject::tr("%1.%2.png").arg(fName).arg(m_sMode);
-    m_iState = m_ptOutParser->write(newName, m_pcPixelBuf, m_iWidth, m_iHeight);
+    m_ptOutParser->openFile(newName);
+    unsigned char *tmpBuf = NULL;
+    m_ptOutParser->setWH(m_iWidth, m_iHeight);
+    m_ptOutParser->invParsePixels(m_pcPixelBuf, tmpBuf, m_sMode);
+    m_ptOutParser->setPixels(tmpBuf);
+    delete [] tmpBuf;
+    m_ptOutParser->closeFile();
+    m_iState = m_ptOutParser->state();
 }
 
 

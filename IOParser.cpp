@@ -30,7 +30,7 @@ int AbstractIOParser::state() {
     return m_iState;
 }
 
-void AbstractIOParser::getWH(int &width, int &height) {
+void AbstractIOParser::getWH(int &width, int &height) const {
     if (m_iState != SUCC_STATUS)
         return;
 

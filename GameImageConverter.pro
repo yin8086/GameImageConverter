@@ -30,15 +30,14 @@ SOURCES += main.cpp \
     BufferParser/ARGB4444BufParser.cpp \
     BufferParser/PVRCT4BufParser.cpp \
     InterPic.cpp \
-    InParserFac.cpp \
     ImageFilter/UnityImageFilter.cpp \
     FilterFac.cpp \
-    OutParserFac.cpp \
     ThreadLogger.cpp \
     BufferParser/DXTBufParser.cpp \
     IOParser.cpp \
     IOParser/UnityIOParser.cpp \
-    IOParser/PNGIOParser.cpp
+    IOParser/PNGIOParser.cpp \
+    IOParserFac.cpp
 
 HEADERS += \
     ThreadWorker.h \
@@ -56,13 +55,12 @@ HEADERS += \
     BufferParser/ARGB4444BufParser.h \
     BufferParser/PVRCT4BufParser.h \
     BaseDef.h \
-    InParserFac.h \
     AbstractFilter.h \
     ImageFilter/UnityImageFilter.h \
     FilterFac.h \
-    OutParserFac.h \
     ThreadLogger.h \
     BufferParser/DXTBufParser.h \
     IOParser.h \
     IOParser/UnityIOParser.h \
-    IOParser/PNGIOParser.h
+    IOParser/PNGIOParser.h \
+    IOParserFac.h
