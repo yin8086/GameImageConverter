@@ -14,11 +14,12 @@ QString RGBA8888BufParser::parse(unsigned char *pSrc, unsigned char *pDst, int w
 }
 
 
-void RGBA8888BufParser::invParse(unsigned char *pSrc, unsigned char *pDst, int width, int height) {
+void RGBA8888BufParser::invParse(unsigned char *pSrc, unsigned char *&rpDst, int width, int height) {
+    rpDst = new unsigned char [(width * height) << 2];
     for(int i = 0, j = 0; i < (width * height) << 2; i += 4, j += 4) {
-        pDst[i]     = pSrc[j+2];
-        pDst[i+1]   = pSrc[j+1];
-        pDst[i+2]   = pSrc[j];
-        pDst[i+3]   = pSrc[j+3];
+        rpDst[i]     = pSrc[j+2];
+        rpDst[i+1]   = pSrc[j+1];
+        rpDst[i+2]   = pSrc[j];
+        rpDst[i+3]   = pSrc[j+3];
     }
 }

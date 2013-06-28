@@ -139,7 +139,16 @@ void UnityIOParser::parsePixels(unsigned char *pSrc, unsigned char *pDst, const 
 }
 
 void UnityIOParser::invParsePixels(unsigned char *pSrc, unsigned char *&rpDst, const QString &mode) {
-
+    if (m_iState != SUCC_STATUS)
+        return;
+    else if(!pSrc) {
+        m_iState = ERR_NORMAL;
+    }
+    else {
+        m_ptParser = m_ptBufFac->createBufParser(mode);
+        m_ptParser->invParse(pSrc, rpDst, m_iWidth, m_iHeight);
+        m_iState = SUCC_STATUS;
+    }
 }
 
 

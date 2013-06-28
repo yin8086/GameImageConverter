@@ -3,7 +3,7 @@
 class AbstractBufferParser {
 public:
     virtual void invParse(unsigned char *pSrc,
-                          unsigned char *pDst,
+                          unsigned char *&rpDst,
                           int width,
                           int height) = 0;
     virtual QString parse(unsigned char *pSrc,

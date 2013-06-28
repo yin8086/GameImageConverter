@@ -14,16 +14,17 @@ QString ARGB4444BufParser::parse(unsigned char *pSrc, unsigned char *pDst, int w
     return "ARGB4444";
 }
 
-void ARGB4444BufParser::invParse(unsigned char *pSrc, unsigned char *pDst, int width, int height) {
+void ARGB4444BufParser::invParse(unsigned char *pSrc, unsigned char *&rpDst, int width, int height) {
     quint16 pixelVal = 0;
     quint16 r,g,b,a;
+    rpDst = new unsigned char [(width * height) << 1];
     for(int i = 0, j = 0; i < (width * height) << 1; i += 2, j += 4) {
         r = (pSrc[j+2]   * 15 + 127) / 255;
         g = (pSrc[j+1] * 15 + 127) / 255;
         b = (pSrc[j]  * 15 + 127) / 255;
         a = (pSrc[j+3] * 15 + 127) / 255;
         pixelVal = (a << 12) | (r << 8) | (g << 4) | b;
-        *(quint16*)(pDst+i) = pixelVal;
+        *(quint16*)(rpDst+i) = pixelVal;
     }
 
 }

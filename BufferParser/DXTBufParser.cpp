@@ -15,7 +15,7 @@ QString DXTBufParser::parse(unsigned char *pSrc, unsigned char *pDst, int width,
     return "DXT5";
 }
 
-void DXTBufParser::invParse(unsigned char *pSrc, unsigned char *pDst, int width, int height) {
+void DXTBufParser::invParse(unsigned char *pSrc, unsigned char *&rpDst, int width, int height) {
     quint8 tmpBuf[width*height*4];
     for(int i = 0; i < width*height*4; i+=4) {
         tmpBuf[i] = pSrc[i+2];
@@ -23,7 +23,11 @@ void DXTBufParser::invParse(unsigned char *pSrc, unsigned char *pDst, int width,
         tmpBuf[i+2] = pSrc[i];
         tmpBuf[i+3] = pSrc[i+3];
     }
-    squish::CompressImage(tmpBuf, width, height, pDst, squish::kDxt5);
+    int bufW = ((width % 4) ? (width/4+1) : (width /4) ) << 2;
+    int bufH = ((height % 4) ? (height/4+1) : (height /4) ) << 2;
+
+    rpDst = new unsigned char [(bufW * bufH)];
+    squish::CompressImage(tmpBuf, width, height, rpDst, squish::kDxt5);
 }
 
 

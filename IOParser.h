@@ -15,6 +15,9 @@ public:
     void getWH(int &width, int &height) const;
     void setWH(int width, int height)
     {m_iHeight = height; m_iWidth = width;}
+    QString toARGB32(unsigned char *&rpDst);
+    void fromARGB32(unsigned char *pSrc, const QString& mode);
+
     virtual QString getPixels(unsigned char *&rpDst) = 0;
     virtual void setPixels(unsigned char *pSrc) = 0;
     virtual void parsePixels(unsigned char *pSrc, unsigned char *pDst, const QString& mode) = 0;

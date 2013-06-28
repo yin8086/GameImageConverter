@@ -9,7 +9,7 @@ public:
                   int width,
                   int height);
     void invParse(unsigned char *pSrc,
-                  unsigned char *pDst,
+                  unsigned char *&rpDst,
                   int width,
                   int height);
 

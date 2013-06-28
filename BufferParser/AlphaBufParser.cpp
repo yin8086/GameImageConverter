@@ -14,10 +14,11 @@ QString AlphaBufParser::parse(unsigned char *pSrc, unsigned char *pDst, int widt
 }
 
 void AlphaBufParser::invParse(unsigned char *pSrc,
-                              unsigned char *pDst,
+                              unsigned char *&rpDst,
                               int width, int height) {
+    rpDst = new unsigned char [width*height];
     for(int i = 0, j = 0; i < width * height; i++, j += 4) {
-        pDst[i] = pSrc[j+3];
+        rpDst[i] = pSrc[j+3];
     }
 
 }
