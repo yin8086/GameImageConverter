@@ -2,7 +2,7 @@
 #include "squish.h"
 #include "DXTBufParser.h"
 
-QString DXTBufParser::parse(unsigned char *pSrc, unsigned char *pDst, int width, int height) {
+QString DXTBufParser::parse(const unsigned char *pSrc, unsigned char *pDst, int width, int height) {
 
     squish::DecompressImage(pDst, width, height, pSrc, squish::kDxt5);
     quint8 tmpVal;
@@ -15,7 +15,7 @@ QString DXTBufParser::parse(unsigned char *pSrc, unsigned char *pDst, int width,
     return "DXT5";
 }
 
-void DXTBufParser::invParse(unsigned char *pSrc, unsigned char *&rpDst, int width, int height) {
+void DXTBufParser::invParse(const unsigned char *pSrc, unsigned char *&rpDst, int width, int height) {
     quint8 tmpBuf[width*height*4];
     for(int i = 0; i < width*height*4; i+=4) {
         tmpBuf[i] = pSrc[i+2];

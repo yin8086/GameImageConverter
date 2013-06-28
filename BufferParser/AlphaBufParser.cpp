@@ -3,7 +3,7 @@
 #include "AlphaBufParser.h"
 
 
-QString AlphaBufParser::parse(unsigned char *pSrc, unsigned char *pDst, int width, int height) {
+QString AlphaBufParser::parse(const unsigned char *pSrc, unsigned char *pDst, int width, int height) {
     for(int i = 0, j = 0; i < width * height; i++, j += 4) {
         pDst[j] = 0;
         pDst[j + 1] = 0;
@@ -13,7 +13,7 @@ QString AlphaBufParser::parse(unsigned char *pSrc, unsigned char *pDst, int widt
     return "Alpha8";
 }
 
-void AlphaBufParser::invParse(unsigned char *pSrc,
+void AlphaBufParser::invParse(const unsigned char *pSrc,
                               unsigned char *&rpDst,
                               int width, int height) {
     rpDst = new unsigned char [width*height];

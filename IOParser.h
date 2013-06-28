@@ -23,6 +23,7 @@ public:
     virtual void parsePixels(unsigned char *pSrc, unsigned char *pDst, const QString& mode) = 0;
     virtual void invParsePixels(unsigned char *pSrc, unsigned char *&rpDst, const QString& mode) = 0;
 
+    virtual QString exportName(const QString& origName, QString& mode) const = 0;
     virtual void getPals(unsigned char *&rpDst) = 0;
     virtual ~AbstractIOParser(){}
 };

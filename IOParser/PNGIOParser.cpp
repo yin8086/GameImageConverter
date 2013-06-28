@@ -41,15 +41,27 @@ QString PNGIOParser::getPixels(unsigned char *&rpDst) {
         m_iHeight = im.height();
         rpDst = im.bits();
         m_iState = SUCC_STATUS;
+
     }
     else
         m_iState = ERR_NOT_EXIST;
     return "";
 }
 
-void PNGIOParser::parsePixels(unsigned char *, unsigned char*, const QString&) {
+void PNGIOParser::parsePixels(unsigned char *pSrc, unsigned char *pDst, const QString &mode) {
+    if(m_iState != SUCC_STATUS)
+        return;
+    else if(!pSrc) {
+        m_iState = ERR_NORMAL;
+    }
+    else
+        memcpy(pDst, pSrc, m_iWidth*m_iHeight*4);
 }
 
 void PNGIOParser::getPals(unsigned char *&) {
 
+}
+
+QString PNGIOParser::exportName(const QString &origName, QString &mode) const {
+    return QObject::tr("%1.%2.png").arg(origName).arg(mode);
 }

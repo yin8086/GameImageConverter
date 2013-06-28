@@ -3,7 +3,7 @@
 #include "RGB888BufParser.h"
 
 
-QString RGB888BufParser::parse(unsigned char *pSrc, unsigned char *pDst, int width, int height) {
+QString RGB888BufParser::parse(const unsigned char *pSrc, unsigned char *pDst, int width, int height) {
     for(int i = 0, j = 0; i < (width * height) * 3; i += 3, j += 4) {
         pDst[j]     = pSrc[i+2]; //b
         pDst[j+1]   = pSrc[i+1]; //g
@@ -13,7 +13,7 @@ QString RGB888BufParser::parse(unsigned char *pSrc, unsigned char *pDst, int wid
     return "RGB888";
 }
 
-void RGB888BufParser::invParse(unsigned char *pSrc, unsigned char *&rpDst, int width, int height) {
+void RGB888BufParser::invParse(const unsigned char *pSrc, unsigned char *&rpDst, int width, int height) {
     rpDst = new unsigned char [(width * height) * 3];
     for(int i = 0, j = 0; i < (width * height) * 3; i += 3, j += 4) {
         rpDst[i]     = pSrc[j+2];

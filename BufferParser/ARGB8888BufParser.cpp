@@ -3,7 +3,7 @@
 #include "ARGB8888BufParser.h"
 
 
-QString ARGB8888BufParser::parse(unsigned char *pSrc, unsigned char *pDst, int width, int height) {
+QString ARGB8888BufParser::parse(const unsigned char *pSrc, unsigned char *pDst, int width, int height) {
     for(int i = 0, j = 0; i < (width * height) << 2; i += 4, j += 4) {
         pDst[j]     = pSrc[i + 3]; //b
         pDst[j + 1]   = pSrc[i + 2]; //g
@@ -13,7 +13,7 @@ QString ARGB8888BufParser::parse(unsigned char *pSrc, unsigned char *pDst, int w
     return "ARGB8888";
 }
 
-void ARGB8888BufParser::invParse(unsigned char *pSrc, unsigned char *&rpDst, int width, int height) {
+void ARGB8888BufParser::invParse(const unsigned char *pSrc, unsigned char *&rpDst, int width, int height) {
     rpDst = new unsigned char [(width * height) << 2];
     for(int i = 0, j = 0; i < (width * height) << 2; i += 4, j += 4) {
         rpDst[i]     = pSrc[j+3];

@@ -3,7 +3,7 @@
 #include "RGBA4444BufParser.h"
 
 
-QString RGBA4444BufParser::parse(unsigned char *pSrc, unsigned char *pDst, int width, int height) {
+QString RGBA4444BufParser::parse(const unsigned char *pSrc, unsigned char *pDst, int width, int height) {
     for(int i = 0, j = 0; i < (width * height) << 1; i += 2, j += 4) {
         quint16 tmpData=*(quint16 *)(pSrc + i);
         pDst[j]     = ( ( (tmpData & 0xf0) >> 4) * 255 + 7) / 15; //b
@@ -14,7 +14,7 @@ QString RGBA4444BufParser::parse(unsigned char *pSrc, unsigned char *pDst, int w
     return "RGBA4444";
 }
 
-void RGBA4444BufParser::invParse(unsigned char *pSrc, unsigned char *&rpDst, int width, int height) {
+void RGBA4444BufParser::invParse(const unsigned char *pSrc, unsigned char *&rpDst, int width, int height) {
     quint16 pixelVal = 0;
     quint16 r,g,b,a;
     rpDst = new unsigned char [(width * height) << 1];

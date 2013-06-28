@@ -9,6 +9,7 @@ public:
     virtual void parsePixels(unsigned char *pSrc, unsigned char *pDst, const QString& mode);
     virtual void invParsePixels(unsigned char *pSrc, unsigned char *&rpDst, const QString&);
 
+    virtual QString exportName(const QString& origName, QString& mode) const;
     virtual void getPals(unsigned char *&rpDst);
 };
 #endif // PNGIOPARSER_H

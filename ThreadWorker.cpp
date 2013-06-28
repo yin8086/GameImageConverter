@@ -63,12 +63,14 @@ void MyRun::run() {
     logMessage += ":    ";
     int runStatus = SUCC_STATUS;
 
-    if (inP && inF && inO) {
+    if (inP && inO) {
         m_ptInterPic.setInParser(inP);
         m_ptInterPic.construct(m_sFName);
 
-        m_ptInterPic.setFilter(inF);
-        m_ptInterPic.filter();
+        if(inF) {
+            m_ptInterPic.setFilter(inF);
+            m_ptInterPic.filter();
+        }
 
         m_ptInterPic.setOutParser(inO);
         m_ptInterPic.output(m_sFName);

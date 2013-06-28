@@ -3,11 +3,11 @@
 #include "BufferParser.h"
 class AlphaBufParser: public AbstractBufferParser {
 public:
-    QString parse(unsigned char *pSrc,
+    QString parse(const unsigned char *pSrc,
                   unsigned char *pDst,
                   int width,
                   int height);
-    void invParse(unsigned char *pSrc,
+    void invParse(const unsigned char *pSrc,
                   unsigned char *&rpDst,
                   int width,
                   int height);

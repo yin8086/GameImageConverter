@@ -8,6 +8,7 @@ class UnityIOParser: public AbstractIOParser {
     AbstractBufParseFactory *m_ptBufFac;
     AbstractBufferParser *m_ptParser;
     int m_iDefault16bpp;
+    unsigned char *m_ptOriBuf;
 public:
     UnityIOParser();
 
@@ -15,6 +16,8 @@ public:
     virtual void setPixels(unsigned char *pSrc);
     virtual void parsePixels(unsigned char *pSrc, unsigned char *pDst, const QString& mode);
     virtual void invParsePixels(unsigned char *pSrc, unsigned char *&rpDst, const QString& mode);
+
+    virtual QString exportName(const QString& origName, QString& mode) const;
 
     virtual void getPals(unsigned char *&rpDst);
     ~UnityIOParser();

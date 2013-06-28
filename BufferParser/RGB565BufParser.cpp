@@ -3,7 +3,7 @@
 #include "RGB565BufParser.h"
 
 
-QString RGB565BufParser::parse(unsigned char *pSrc, unsigned char *pDst, int width, int height) {
+QString RGB565BufParser::parse(const unsigned char *pSrc, unsigned char *pDst, int width, int height) {
     for(int i = 0, j = 0; i < (width * height) << 1; i += 2, j += 4) {
         quint16 tmpData=*(quint16 *)(pSrc + i);
         pDst[j]     = ( (tmpData & 0x1f) * 255 + 15) / 31; //b
@@ -14,7 +14,7 @@ QString RGB565BufParser::parse(unsigned char *pSrc, unsigned char *pDst, int wid
     return "RGB565";
 }
 
-void RGB565BufParser::invParse(unsigned char *pSrc, unsigned char *&rpDst, int width, int height) {
+void RGB565BufParser::invParse(const unsigned char *pSrc, unsigned char *&rpDst, int width, int height) {
     quint16 pixelVal = 0;
     quint16 r,g,b;
     rpDst = new unsigned char [(width * height) << 1];

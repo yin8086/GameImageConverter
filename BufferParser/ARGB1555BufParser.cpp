@@ -3,7 +3,7 @@
 #include "ARGB1555BufParser.h"
 
 
-QString ARGB1555BufParser::parse(unsigned char *pSrc, unsigned char *pDst, int width, int height) {
+QString ARGB1555BufParser::parse(const unsigned char *pSrc, unsigned char *pDst, int width, int height) {
     for(int i = 0, j = 0; i < (width * height) << 1; i += 2, j += 4) {
         quint16 tmpData=*(quint16 *)(pSrc + i);
         pDst[j]     = ( (tmpData & 0x1f) * 255 + 15) / 31; //b
@@ -14,7 +14,7 @@ QString ARGB1555BufParser::parse(unsigned char *pSrc, unsigned char *pDst, int w
     return "ARGB1555";
 }
 
-void ARGB1555BufParser::invParse(unsigned char *pSrc, unsigned char *&rpDst, int width, int height) {
+void ARGB1555BufParser::invParse(const unsigned char *pSrc, unsigned char *&rpDst, int width, int height) {
     quint16 pixelVal = 0;
     quint16 r,g,b,a;
     rpDst = new unsigned char [(width * height) << 1];
