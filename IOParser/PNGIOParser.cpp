@@ -39,7 +39,8 @@ QString PNGIOParser::getPixels(unsigned char *&rpDst) {
             im = im.convertToFormat(QImage::Format_ARGB32);
         m_iWidth = im.width();
         m_iHeight = im.height();
-        rpDst = im.bits();
+        rpDst = new unsigned char [m_iWidth * m_iHeight * 4];
+        memcpy(rpDst, im.bits(), m_iWidth * m_iHeight * 4);
         m_iState = SUCC_STATUS;
 
     }

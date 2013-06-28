@@ -16,7 +16,7 @@ QString DXTBufParser::parse(const unsigned char *pSrc, unsigned char *pDst, int 
 }
 
 void DXTBufParser::invParse(const unsigned char *pSrc, unsigned char *&rpDst, int width, int height) {
-    quint8 tmpBuf[width*height*4];
+    quint8 *tmpBuf = new unsigned char[width*height*4];
     for(int i = 0; i < width*height*4; i+=4) {
         tmpBuf[i] = pSrc[i+2];
         tmpBuf[i+1] = pSrc[i+1];
@@ -28,6 +28,7 @@ void DXTBufParser::invParse(const unsigned char *pSrc, unsigned char *&rpDst, in
 
     rpDst = new unsigned char [(bufW * bufH)];
     squish::CompressImage(tmpBuf, width, height, rpDst, squish::kDxt5);
+    delete []tmpBuf;
 }
 
 

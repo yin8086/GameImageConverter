@@ -19,6 +19,9 @@ void ThreadLogger::threadPrintfId(const QString &prefix, int status) {
     else if(status == ERR_NOT_EXIST) {
         threadPrintf(prefix + "File not Exist\n");
     }
+    else if(status == ERR_BUFFER_PARSER_ERROR) {
+        threadPrintf(prefix + "Buffer Parser Error\n");
+    }
 }
 
 void ThreadLogger::threadPrintf(const QString &message) {

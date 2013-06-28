@@ -55,7 +55,7 @@ QString UnityIOParser::getPixels(unsigned char *&rpDst) {
                 quint32 imageSize = m_iWidth*m_iHeight*pixelSize;
 
                 if(pixelSize == 1) {
-                    type = "Alpha8";
+                    type = "ALPHA8";
                 }
                 else if(pixelSize == 2) {
                     if(m_iDefault16bpp == 0) {
@@ -152,8 +152,11 @@ void UnityIOParser::setPixels(unsigned char *pSrc) {
                 oriImageSize = (width*height)<<2;
             else if(pixelSize == 0x07)
                 oriImageSize = (width*height)<<1;
-            else if(pixelSize == 0x0c)
-                oriImageSize = width*height;
+            else if(pixelSize == 0x0c) {
+                quint32 newW = (width % 4) ? (((width >> 2) <<2) + 1):((width >> 2) <<2);
+                quint32 newH = (height % 4) ? (((height >> 2) <<2) + 1):((height >> 2) <<2);
+                oriImageSize = newW*newH;
+            }
             else if(pixelSize ==0x20 || pixelSize == 0x21) {
                 oriImageSize = (width*height)>>1;
             }
@@ -171,8 +174,11 @@ void UnityIOParser::setPixels(unsigned char *pSrc) {
                     imageSize = (width*height)<<2;
                 else if(pixelSize == 0x07)
                     imageSize = (width*height)<<1;
-                else if(pixelSize == 0x0c)
-                    imageSize = width*height;
+                else if(pixelSize == 0x0c){
+                    quint32 newW = (width % 4) ? (((width >> 2) <<2) + 1):((width >> 2) <<2);
+                    quint32 newH = (height % 4) ? (((height >> 2) <<2) + 1):((height >> 2) <<2);
+                    oriImageSize = newW*newH;
+                }
                 else if(pixelSize ==0x20 || pixelSize == 0x21)
                     imageSize = (width*height)>>1;
 
@@ -187,7 +193,7 @@ void UnityIOParser::setPixels(unsigned char *pSrc) {
             br.writeRawData((const char*)pSrc, imageSize);
             newSize += imageSize;
 
-            if(oriImageSize != imageDataSize) { //mipmap
+            if(oriImageSize != imageDataSize && pixelSize != 0x0c) { //mipmap
                 const QImage oriIm(m_ptOriBuf, width, height, QImage::Format_ARGB32);
                 while(width/2 >=1 && height/2 >=1) {
                     width /= 2;
@@ -232,8 +238,12 @@ void UnityIOParser::parsePixels(unsigned char *pSrc, unsigned char *pDst, const 
     }
     else {
         m_ptParser = m_ptBufFac->createBufParser(mode);
-        m_ptParser->parse(pSrc, pDst, m_iWidth, m_iHeight);
-        m_iState = SUCC_STATUS;
+        if (m_ptParser) {
+            m_ptParser->parse(pSrc, pDst, m_iWidth, m_iHeight);
+            m_iState = SUCC_STATUS;
+        }
+        else
+            m_iState = ERR_BUFFER_PARSER_ERROR;
     }
 }
 
@@ -247,8 +257,12 @@ void UnityIOParser::invParsePixels(unsigned char *pSrc, unsigned char *&rpDst, c
         m_ptOriBuf = new unsigned char[m_iWidth * m_iHeight * 4];
         memcpy(m_ptOriBuf, pSrc, m_iWidth * m_iHeight * 4);
         m_ptParser = m_ptBufFac->createBufParser(mode);
-        m_ptParser->invParse(pSrc, rpDst, m_iWidth, m_iHeight);
-        m_iState = SUCC_STATUS;
+        if (m_ptParser) {
+            m_ptParser->invParse(pSrc, rpDst, m_iWidth, m_iHeight);
+            m_iState = SUCC_STATUS;
+        }
+        else
+            m_iState = ERR_BUFFER_PARSER_ERROR;
     }
 }
 

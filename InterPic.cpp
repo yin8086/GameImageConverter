@@ -32,7 +32,7 @@ void InterPic::output(const QString& fName) {
     QString newName = m_ptOutParser->exportName(fName, m_sMode);
     m_ptOutParser->openFile(newName);
     m_ptOutParser->setWH(m_iWidth, m_iHeight);
-    m_ptOutParser->fromARGB32(m_pcPixelBuf, m_sMode);
+    m_ptOutParser->fromARGB32(m_pcPixelBuf, m_sMode.toUpper());
     m_ptOutParser->closeFile();
     m_iState = m_ptOutParser->state();
 }

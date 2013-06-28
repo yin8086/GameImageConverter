@@ -10,7 +10,7 @@ QString AlphaBufParser::parse(const unsigned char *pSrc, unsigned char *pDst, in
         pDst[j + 2] = 0;
         pDst[j + 3] = pSrc[i];
     }
-    return "Alpha8";
+    return "ALPHA8";
 }
 
 void AlphaBufParser::invParse(const unsigned char *pSrc,

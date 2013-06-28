@@ -14,7 +14,7 @@
 
 
 AbstractBufferParser* NormalBufParserFac::createBufParser(const QString &type) {
-    if(type == "Alpha8") {
+    if(type == "ALPHA8") {
         return new AlphaBufParser();
     }
     else if(type == "ARGB1555") {
@@ -28,7 +28,6 @@ AbstractBufferParser* NormalBufParserFac::createBufParser(const QString &type) {
     }
     else if(type == "RGB565") {
         return new RGB565BufParser();
-
     }
     else if(type == "RGB888") {
         return new RGB888BufParser();
