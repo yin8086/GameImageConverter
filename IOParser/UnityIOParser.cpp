@@ -213,14 +213,25 @@ void UnityIOParser::setPixels(unsigned char *pSrc) {
             br.writeRawData((const char*)pSrc, imageSize);
             newSize += imageSize;
 
-            if(oriImageSize != imageDataSize && pixelSize != 0x0c && pixelSize != 0x0a) { //mipmap
+            if(oriImageSize != imageDataSize) { //mipmap
                 const QImage oriIm(m_ptOriBuf, width, height, QImage::Format_ARGB32);
                 while(width/2 >=1 && height/2 >=1) {
                     width /= 2;
                     height /= 2;
                     const QImage im = oriIm.scaledToWidth(width,Qt::SmoothTransformation);
                     uchar* tarBuf = NULL;
-                    imageSize /= 4;
+                    if(pixelSize == 0x0c) {
+                        quint32 newW = ((width % 4) ? (width/4+1) : (width /4) ) << 2;
+                        quint32 newH = ((height % 4) ? (height/4+1) : (height /4) ) << 2;
+                        imageSize = newW * newH;
+                    }
+                    else if(pixelSize == 0x0a) {
+                        quint32 newW = ((width % 4) ? (width/4+1) : (width /4) ) << 2;
+                        quint32 newH = ((height % 4) ? (height/4+1) : (height /4) ) << 2;
+                        imageSize = (newW * newH)>>1;
+                    }
+                    else
+                        imageSize /= 4;
                     m_ptParser->invParse(im.bits(), tarBuf, width, height);
                     br.writeRawData((const char*)tarBuf, imageSize);
                     delete[] tarBuf;
