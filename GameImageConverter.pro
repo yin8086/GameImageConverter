@@ -37,7 +37,8 @@ SOURCES += main.cpp \
     IOParser.cpp \
     IOParser/UnityIOParser.cpp \
     IOParser/PNGIOParser.cpp \
-    IOParserFac.cpp
+    IOParserFac.cpp \
+    BufferParser/DXT1BufParser.cpp
 
 HEADERS += \
     ThreadWorker.h \
@@ -63,4 +64,5 @@ HEADERS += \
     IOParser.h \
     IOParser/UnityIOParser.h \
     IOParser/PNGIOParser.h \
-    IOParserFac.h
+    IOParserFac.h \
+    BufferParser/DXT1BufParser.h
