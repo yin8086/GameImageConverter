@@ -25,6 +25,7 @@ public:
     void addTo(QStringList& rhs) { m_asFileList.append(rhs); }
     int work();
     void getFiles();
+    void addTo(const QString& rhs) { m_asFileList.append(rhs); }
 };
 
 #endif // THREADWORKER_H

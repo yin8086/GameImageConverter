@@ -48,7 +48,8 @@ QString UnityIOParser::getPixels(unsigned char *&rpDst) {
     br>>m_iWidth>>m_iHeight>>imageDataSize>>pixelSize;
 
     try {
-        if(m_ptOrigF.size() > imageDataSize + 20 && imageDataSize > 0) {
+        if(m_iWidth > 0 && m_iHeight > 0
+            && m_ptOrigF.size() > imageDataSize + 20 && imageDataSize > 0) {
             if ( (1 <= pixelSize && pixelSize <=7 && pixelSize != 6) ||
                     ( pixelSize == 0x20 ||pixelSize == 0x21 || pixelSize == 0x0c
                       || pixelSize == 0x0a) ){

@@ -5,6 +5,9 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     ThreadWorker tw;
-    tw.getFiles();
+    if (argc > 1)
+        tw.addTo(QString(argv[1]));
+    else
+        tw.getFiles();
     return tw.work();
 }

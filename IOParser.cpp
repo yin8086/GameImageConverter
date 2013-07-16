@@ -22,8 +22,13 @@ void AbstractIOParser::openFile(const QString& fName) {
 }
 
 void AbstractIOParser::closeFile() {
-    if(m_ptOrigF.isOpen())
+    quint64 fSize = -1;
+    if(m_ptOrigF.isOpen()) {
+        fSize = m_ptOrigF.size();
         m_ptOrigF.close();
+    }
+    if(fSize == 0)
+        m_ptOrigF.remove();
 }
 
 int AbstractIOParser::state() {
