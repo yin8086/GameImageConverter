@@ -52,7 +52,7 @@ QString UnityIOParser::getPixels(unsigned char *&rpDst) {
             && m_ptOrigF.size() > imageDataSize + 20 && imageDataSize > 0) {
             if ( (1 <= pixelSize && pixelSize <=7 && pixelSize != 6) ||
                     ( pixelSize == 0x20 ||pixelSize == 0x21 || pixelSize == 0x0c
-                      || pixelSize == 0x0a) ){
+                      || pixelSize == 0x0a || pixelSize == 0x0d) ){
 
                 quint32 imageSize = m_iWidth*m_iHeight*pixelSize;
 
@@ -96,6 +96,10 @@ QString UnityIOParser::getPixels(unsigned char *&rpDst) {
                     quint32 newW = ((m_iWidth % 4) ? (m_iWidth/4+1) : (m_iWidth /4) ) << 2;
                     quint32 newH = ((m_iHeight % 4) ? (m_iHeight/4+1) : (m_iHeight /4) ) << 2;
                     imageSize = newW * newH;
+                }
+                else if(pixelSize == 0x0d) {
+                    type = "RGBA4444";
+                    imageSize = (m_iWidth*m_iHeight)<<1;
                 }
                 else if(pixelSize == 0x21 || pixelSize == 0x20) {
                     type = "PVRTC4";
@@ -154,7 +158,7 @@ void UnityIOParser::setPixels(unsigned char *pSrc) {
     if(m_ptOrigF.size() > imageDataSize + 20 && imageDataSize > 0) {
         if ( (1 <= pixelSize && pixelSize <=7 && pixelSize != 6) ||
                 ( pixelSize == 0x20 ||pixelSize == 0x21 || pixelSize == 0x0c
-                  || pixelSize == 0x0a) ){
+                  || pixelSize == 0x0a || pixelSize == 0x0d) ){
 
             quint32 oriImageSize = width*height*pixelSize;
             quint32 imageSize;
@@ -173,6 +177,8 @@ void UnityIOParser::setPixels(unsigned char *pSrc) {
                 quint32 newH = ((height % 4) ? (height/4+1) : (height /4) ) << 2;
                 oriImageSize = newW*newH;
             }
+            else if(pixelSize == 0x0d)
+                oriImageSize = (width*height)<<1;
             else if(pixelSize ==0x20 || pixelSize == 0x21) {
                 oriImageSize = (width*height)>>1;
             }
@@ -200,6 +206,8 @@ void UnityIOParser::setPixels(unsigned char *pSrc) {
                     quint32 newH = ((height % 4) ? (height/4+1) : (height /4) ) << 2;
                     imageSize = newW*newH;
                 }
+                else if(pixelSize == 0x0d)
+                    imageSize = (width*height)<<1;
                 else if(pixelSize ==0x20 || pixelSize == 0x21)
                     imageSize = (width*height)>>1;
 
