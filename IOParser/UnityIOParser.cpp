@@ -245,12 +245,12 @@ void UnityIOParser::setPixels(unsigned char *pSrc) {
                     height /= 2;
                     const QImage im = oriIm.scaledToWidth(width,Qt::SmoothTransformation);
                     uchar* tarBuf = NULL;
-                    if(pixelSize == 0x0c) {
+                    if(pixelSize == 0x0c) { //dxt5 8bpp
                         quint32 newW = ((width % 4) ? (width/4+1) : (width /4) ) << 2;
                         quint32 newH = ((height % 4) ? (height/4+1) : (height /4) ) << 2;
                         imageSize = newW * newH;
                     }
-                    else if(pixelSize == 0x0a) {
+                    else if(pixelSize == 0x0a || pixelSize == 0x22) { //dxt1 or etc1 4bpp
                         quint32 newW = ((width % 4) ? (width/4+1) : (width /4) ) << 2;
                         quint32 newH = ((height % 4) ? (height/4+1) : (height /4) ) << 2;
                         imageSize = (newW * newH)>>1;
