@@ -15,7 +15,7 @@ QT += widgets
 TEMPLATE = app
 
 INCLUDEPATH += ./include/
-LIBS += -L../GameImageConverter/lib -lpvrtc -lsquish
+LIBS += -L../GameImageConverter/lib -lpvrtc -lsquish -lrg_etc1
 
 SOURCES += main.cpp \
     ThreadWorker.cpp \
@@ -38,7 +38,8 @@ SOURCES += main.cpp \
     IOParser/UnityIOParser.cpp \
     IOParser/PNGIOParser.cpp \
     IOParserFac.cpp \
-    BufferParser/DXT1BufParser.cpp
+    BufferParser/DXT1BufParser.cpp \
+    BufferParser/ETC1BufParser.cpp
 
 HEADERS += \
     ThreadWorker.h \
@@ -65,4 +66,5 @@ HEADERS += \
     IOParser/UnityIOParser.h \
     IOParser/PNGIOParser.h \
     IOParserFac.h \
-    BufferParser/DXT1BufParser.h
+    BufferParser/DXT1BufParser.h \
+    BufferParser/ETC1BufParser.h

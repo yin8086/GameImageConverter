@@ -12,6 +12,7 @@
 #include "BufferParser/RGBA8888BufParser.h"
 #include "BufferParser/DXTBufParser.h"
 #include "BufferParser/DXT1BufParser.h"
+#include "BufferParser/ETC1BufParser.h"
 
 
 AbstractBufferParser* NormalBufParserFac::createBufParser(const QString &type) {
@@ -47,6 +48,9 @@ AbstractBufferParser* NormalBufParserFac::createBufParser(const QString &type) {
     }
     else if(type == "DXT1") {
         return new DXT1BufParser();
+    }
+    else if(type == "ETC1") {
+        return new ETC1BufParser();
     }
     else
         return NULL;

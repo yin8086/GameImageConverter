@@ -51,8 +51,9 @@ QString UnityIOParser::getPixels(unsigned char *&rpDst) {
         if(m_iWidth > 0 && m_iHeight > 0
             && m_ptOrigF.size() > imageDataSize + 20 && imageDataSize > 0) {
             if ( (1 <= pixelSize && pixelSize <=7 && pixelSize != 6) ||
-                    ( pixelSize == 0x20 ||pixelSize == 0x21 || pixelSize == 0x0c
-                      || pixelSize == 0x0a || pixelSize == 0x0d) ){
+                    ( pixelSize == 0x20 ||pixelSize == 0x21 ||
+                      pixelSize == 0x22 || pixelSize == 0x0c ||
+                      pixelSize == 0x0a || pixelSize == 0x0d) ){
 
                 quint32 imageSize = m_iWidth*m_iHeight*pixelSize;
 
@@ -103,6 +104,10 @@ QString UnityIOParser::getPixels(unsigned char *&rpDst) {
                 }
                 else if(pixelSize == 0x21 || pixelSize == 0x20) {
                     type = "PVRTC4";
+                    imageSize = (m_iWidth*m_iHeight)>>1;
+                }
+                else if(pixelSize == 0x22) {
+                    type = "ETC1";
                     imageSize = (m_iWidth*m_iHeight)>>1;
                 }
 
@@ -157,8 +162,9 @@ void UnityIOParser::setPixels(unsigned char *pSrc) {
 
     if(m_ptOrigF.size() > imageDataSize + 20 && imageDataSize > 0) {
         if ( (1 <= pixelSize && pixelSize <=7 && pixelSize != 6) ||
-                ( pixelSize == 0x20 ||pixelSize == 0x21 || pixelSize == 0x0c
-                  || pixelSize == 0x0a || pixelSize == 0x0d) ){
+             ( pixelSize == 0x20 ||pixelSize == 0x21 ||
+               pixelSize == 0x22 || pixelSize == 0x0c ||
+               pixelSize == 0x0a || pixelSize == 0x0d) ){
 
             quint32 oriImageSize = width*height*pixelSize;
             quint32 imageSize;
@@ -167,12 +173,12 @@ void UnityIOParser::setPixels(unsigned char *pSrc) {
                 oriImageSize = (width*height)<<2;
             else if(pixelSize == 0x07)
                 oriImageSize = (width*height)<<1;
-            else if(pixelSize == 0x0a) {
+            else if(pixelSize == 0x0a) { //dxt1
                 quint32 newW = ((width % 4) ? (width/4+1) : (width /4) ) << 2;
                 quint32 newH = ((height % 4) ? (height/4+1) : (height /4) ) << 2;
                 oriImageSize = (newW*newH)>>1;
             }
-            else if(pixelSize == 0x0c) {
+            else if(pixelSize == 0x0c) {//dxt5
                 quint32 newW = ((width % 4) ? (width/4+1) : (width /4) ) << 2;
                 quint32 newH = ((height % 4) ? (height/4+1) : (height /4) ) << 2;
                 oriImageSize = newW*newH;
@@ -181,6 +187,11 @@ void UnityIOParser::setPixels(unsigned char *pSrc) {
                 oriImageSize = (width*height)<<1;
             else if(pixelSize ==0x20 || pixelSize == 0x21) {
                 oriImageSize = (width*height)>>1;
+            }
+            else if(pixelSize ==0x22) { //etc1
+                quint32 newW = ((width % 4) ? (width/4+1) : (width /4) ) << 2;
+                quint32 newH = ((height % 4) ? (height/4+1) : (height /4) ) << 2;
+                oriImageSize = (newW*newH)>>1;
             }
 
             if (width != m_iWidth || height != m_iHeight) {
@@ -210,6 +221,11 @@ void UnityIOParser::setPixels(unsigned char *pSrc) {
                     imageSize = (width*height)<<1;
                 else if(pixelSize ==0x20 || pixelSize == 0x21)
                     imageSize = (width*height)>>1;
+                else if(pixelSize == 0x22) { //etc1
+                    quint32 newW = ((width % 4) ? (width/4+1) : (width /4) ) << 2;
+                    quint32 newH = ((height % 4) ? (height/4+1) : (height /4) ) << 2;
+                    imageSize = (newW*newH)>>1;
+                }
 
             }
             else {
