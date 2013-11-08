@@ -11,6 +11,7 @@ public:
     AbstractIOParser();
     void openFile(const QString& fName);
     void closeFile();
+    void reset();
     int state();
     void getWH(int &width, int &height) const;
     void setWH(int width, int height)

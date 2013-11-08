@@ -126,6 +126,8 @@ void ImgThread::run() {
             interPic.output(m_curImgName);
 
             m_runStatus = interPic.state();
+            m_InParser->reset();
+            m_OutParser->reset();
 
         }
         else

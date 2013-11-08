@@ -34,6 +34,9 @@ void AbstractIOParser::closeFile() {
 int AbstractIOParser::state() {
     return m_iState;
 }
+void AbstractIOParser::reset() {
+    m_iState = SUCC_STATUS;
+}
 
 void AbstractIOParser::getWH(int &width, int &height) const {
     if (m_iState != SUCC_STATUS)
