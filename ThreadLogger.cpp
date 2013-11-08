@@ -34,6 +34,9 @@ void ThreadLogger::threadPrintfId(const QString &prefix, int status) {
     else if(status == ERR_BUFFER_PARSER_ERROR) {
         threadPrintf(prefix + "Buffer Parser Error\n");
     }
+    else if(status == ERR_IMAGE_SMALL) {
+        threadPrintf(prefix + "Image Become Small\n");
+    }
 }
 
 void ThreadLogger::threadPrintf(const QString &message) {

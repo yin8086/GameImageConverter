@@ -232,44 +232,48 @@ void UnityIOParser::setPixels(unsigned char *pSrc) {
                 imageSize = oriImageSize;
             }
 
-            quint64 addrData = m_ptOrigF.size() - imageDataSize;
-            m_ptOrigF.seek(addrData);
+            if(imageSize >= oriImageSize) {
+                quint64 addrData = m_ptOrigF.size() - imageDataSize;
+                m_ptOrigF.seek(addrData);
 
-            br.writeRawData((const char*)pSrc, imageSize);
-            newSize += imageSize;
+                br.writeRawData((const char*)pSrc, imageSize);
+                newSize += imageSize;
 
-            if(oriImageSize != imageDataSize) { //mipmap
-                const QImage oriIm(m_ptOriBuf, width, height, QImage::Format_ARGB32);
-                while(width/2 >=1 && height/2 >=1) {
-                    width /= 2;
-                    height /= 2;
-                    const QImage im = oriIm.scaledToWidth(width,Qt::SmoothTransformation);
-                    uchar* tarBuf = NULL;
-                    if(pixelSize == 0x0c) { //dxt5 8bpp
-                        quint32 newW = ((width % 4) ? (width/4+1) : (width /4) ) << 2;
-                        quint32 newH = ((height % 4) ? (height/4+1) : (height /4) ) << 2;
-                        imageSize = newW * newH;
+                if(oriImageSize != imageDataSize) { //mipmap
+                    const QImage oriIm(m_ptOriBuf, width, height, QImage::Format_ARGB32);
+                    while(width/2 >=1 && height/2 >=1) {
+                        width /= 2;
+                        height /= 2;
+                        const QImage im = oriIm.scaledToWidth(width,Qt::SmoothTransformation);
+                        uchar* tarBuf = NULL;
+                        if(pixelSize == 0x0c) { //dxt5 8bpp
+                            quint32 newW = ((width % 4) ? (width/4+1) : (width /4) ) << 2;
+                            quint32 newH = ((height % 4) ? (height/4+1) : (height /4) ) << 2;
+                            imageSize = newW * newH;
+                        }
+                        else if(pixelSize == 0x0a || pixelSize == 0x22) { //dxt1 or etc1 4bpp
+                            quint32 newW = ((width % 4) ? (width/4+1) : (width /4) ) << 2;
+                            quint32 newH = ((height % 4) ? (height/4+1) : (height /4) ) << 2;
+                            imageSize = (newW * newH)>>1;
+                        }
+                        else
+                            imageSize /= 4;
+                        m_ptParser->invParse(im.bits(), tarBuf, width, height);
+                        br.writeRawData((const char*)tarBuf, imageSize);
+                        delete[] tarBuf;
+                        newSize += imageSize;
                     }
-                    else if(pixelSize == 0x0a || pixelSize == 0x22) { //dxt1 or etc1 4bpp
-                        quint32 newW = ((width % 4) ? (width/4+1) : (width /4) ) << 2;
-                        quint32 newH = ((height % 4) ? (height/4+1) : (height /4) ) << 2;
-                        imageSize = (newW * newH)>>1;
-                    }
-                    else
-                        imageSize /= 4;
-                    m_ptParser->invParse(im.bits(), tarBuf, width, height);
-                    br.writeRawData((const char*)tarBuf, imageSize);
-                    delete[] tarBuf;
-                    newSize += imageSize;
                 }
+                if(modifyWH) {
+                    m_ptOrigF.seek(addrWH);
+                    br <<m_iWidth <<m_iHeight <<newSize;
+                    m_ptOrigF.seek(addrData - 4);
+                    br <<newSize;
+                }
+                m_iState = SUCC_STATUS;
             }
-            if(modifyWH) {
-                m_ptOrigF.seek(addrWH);
-                br <<m_iWidth <<m_iHeight <<newSize;
-                m_ptOrigF.seek(addrData - 4);
-                br <<newSize;
-            }
-            m_iState = SUCC_STATUS;
+            else
+                m_iState = ERR_IMAGE_SMALL;
         }
         else
             m_iState = ERR_UNKNOWN_FORM;
