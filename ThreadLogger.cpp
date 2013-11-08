@@ -1,5 +1,17 @@
+#include <QtCore>
+#include <QFile>
+#include <QTextStream>
 #include "ThreadLogger.h"
 #include "BaseDef.h"
+
+ThreadLogger::ThreadLogger() {
+    m_logFile.setFileName("GIConverter.log");
+    m_logFile.open(QIODevice::WriteOnly);
+}
+ThreadLogger::~ThreadLogger() {
+    m_logFile.close();
+}
+
 void ThreadLogger::threadPrintfId(const QString &prefix, int status) {
     if (status == SUCC_STATUS) {
         threadPrintf(prefix + "Succeed\n");
@@ -25,9 +37,10 @@ void ThreadLogger::threadPrintfId(const QString &prefix, int status) {
 }
 
 void ThreadLogger::threadPrintf(const QString &message) {
-    m_cMutex.lock();
+    QMutexLocker locker(&m_cMutex);
     printf(message.toLocal8Bit().data());
-    m_cMutex.unlock();
+    QTextStream writer(&m_logFile);
+    writer << message.toLocal8Bit().data();
 }
 
 ThreadLogger g_cThreadLog;
