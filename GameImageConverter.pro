@@ -39,7 +39,8 @@ SOURCES += main.cpp \
     IOParser/PNGIOParser.cpp \
     IOParserFac.cpp \
     BufferParser/DXT1BufParser.cpp \
-    BufferParser/ETC1BufParser.cpp
+    BufferParser/ETC1BufParser.cpp \
+    IOParser/GzipGimIOParser.cpp
 
 HEADERS += \
     ThreadWorker.h \
@@ -67,4 +68,5 @@ HEADERS += \
     IOParser/PNGIOParser.h \
     IOParserFac.h \
     BufferParser/DXT1BufParser.h \
-    BufferParser/ETC1BufParser.h
+    BufferParser/ETC1BufParser.h \
+    IOParser/GzipGimIOParser.h
