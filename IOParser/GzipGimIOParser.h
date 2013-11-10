@@ -13,6 +13,6 @@ public:
     virtual QString exportName(const QString& origName, QString& mode) const;
     virtual void getPals(unsigned char *&rpDst);
 private:
-
+    void GzipUncomp(const char *inBuf, char* &outBuf, uint32_t *pSize);
 };
 #endif // GZIPGIMIOPARSER_H
