@@ -66,3 +66,11 @@ void PNGIOParser::getPals(unsigned char *&) {
 QString PNGIOParser::exportName(const QString &origName, QString &mode) const {
     return QObject::tr("%1.%2.png").arg(origName).arg(mode);
 }
+
+
+void PNGIOParser::parsePals(unsigned char *&,
+                                 unsigned char *,
+                                 unsigned char *,
+                                 const QString& ) {
+
+}

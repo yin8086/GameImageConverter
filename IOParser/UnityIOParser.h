@@ -18,7 +18,10 @@ public:
     virtual void invParsePixels(unsigned char *pSrc, unsigned char *&rpDst, const QString& mode);
 
     virtual QString exportName(const QString& origName, QString& mode) const;
-
+    virtual void parsePals(unsigned char *&,
+                                     unsigned char *,
+                                     unsigned char *,
+                                     const QString& );
     virtual void getPals(unsigned char *&rpDst);
     ~UnityIOParser();
 };

@@ -61,8 +61,19 @@ void GzipGimIOParser::GzipUncomp(const char *inBuf,
         m_iState = ERR_NORMAL;
     }
 }
+void GzipGimIOParser::getPals(unsigned char *&rpDst) {
+    if (m_iState != SUCC_STATUS)
+        return;
 
-QString GzipGimIOParser::getPals(unsigned char *&rpDst) {
+    QDataStream br(&m_ptOrigF);
+    br.setByteOrder(QDataStream::LittleEndian);
+
+    m_ptOrigF.seek(0);
+    rpDst = new unsigned char[4*256];
+    br.readRawData((char*)rpDst, 4*256);
+}
+
+QString GzipGimIOParser::getPixels(unsigned char *&rpDst) {
     if (m_iState != SUCC_STATUS)
         return "";
 
@@ -92,13 +103,31 @@ QString GzipGimIOParser::getPals(unsigned char *&rpDst) {
         uint32_t uncompSize = 0;
         GzipUncomp(compBuf, uncompBuf, &uncompSize);
 
-        if(m_iState == SUCC_STATUS) {
-            rpDst = new unsigned char[4*256+uncompSize];
-            memcpy(rpDst, palBuf, 4*256);
-            memcpy(rpDst+4*256, uncompBuf, uncompSize);
+        if(m_iState == SUCC_STATUS) { //return indexed pixels
+            rpDst = uncompBuf;
+
+            if(type == "MAP") {
+                m_ptOrigF.seek(0x400);
+                char mapBuf[0x30] = {0};
+
+                br.readRawData(mapBuf,0x30);
+                m_iWidth = *(uint16_t *)mapBuf[0x1c];
+                m_iHeight = *(uint16_t *)mapBuf[0x1e];
+
+                if(*(uint16_t *)mapBuf[0x1a] != 0)
+                    type = "FACE";
+
+            }
+            else {
+                m_iWidth = 480;
+                m_iHeight = 272;
+            }
+
+        }
+        else {
+            delete [] uncompBuf;
         }
         delete [] compBuf;
-        delete [] uncompBuf;
     }
     else
         m_iState = ERR_NOT_IMAGE;
@@ -108,3 +137,61 @@ QString GzipGimIOParser::getPals(unsigned char *&rpDst) {
     else
         return "";
 }
+
+void GzipGimIOParser::parsePals(unsigned char *&rpDst,
+                                 unsigned char *pSrc,
+                                 unsigned char *pPal,
+                                 const QString& ) {
+    if (m_iState != SUCC_STATUS)
+        return;
+
+    rpDst = new unsigned char[m_iWidth * m_iHeight * 4];
+    unsigned char *srcL = pSrc, *dstL = rpDst;
+    unsigned char *srcP = 0, *dstP = 0;
+    int index = 0;
+    for(int y = 0; y < m_iHeight; y++) {
+        srcP = srcL; dstP = dstL;
+        for(int x = 0; x < m_iWidth; ++x) {
+            index = *srcP;
+            dstP[0] = pPal[index];
+            dstP[1] = pPal[index + 1];
+            dstP[2] = pPal[index + 2];
+            dstP[3] = pPal[index + 3];
+
+            dstP += 4;
+            srcP += 1;
+        }
+        srcL += m_iWidth;
+        dstL += (m_iWidth*4);
+    }
+
+}
+void GzipGimIOParser::parsePixels(unsigned char *pSrc,
+                                  unsigned char *pDst,
+                                  const QString &) {
+    if (m_iState != SUCC_STATUS)
+        return;
+
+    memcpy(pDst, pSrc, m_iWidth * m_iHeight * 4);
+}
+
+void GzipGimIOParser::setPixels(unsigned char *pSrc) {
+    if (m_iState != SUCC_STATUS)
+        return;
+}
+
+void GzipGimIOParser::invParsePixels(unsigned char *pSrc, unsigned char *&rpDst, const QString &) {
+    if (m_iState != SUCC_STATUS)
+        return;
+}
+
+QString GzipGimIOParser::exportName(const QString &origName, QString &mode) const {
+    if (m_iState != SUCC_STATUS)
+        return "";
+
+    QString testStr = origName.left(origName.length() - 4);
+    QString binName = testStr.left(testStr.lastIndexOf("."));
+    mode = testStr.right(testStr.length() - binName.length() - 1);
+    return binName;
+}
+

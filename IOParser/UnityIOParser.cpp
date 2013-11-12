@@ -333,3 +333,10 @@ QString UnityIOParser::exportName(const QString &origName, QString &mode) const 
     mode = testStr.right(testStr.length() - binName.length() - 1);
     return binName;
 }
+
+void UnityIOParser::parsePals(unsigned char *&,
+                                 unsigned char *,
+                                 unsigned char *,
+                                 const QString& ) {
+
+}

@@ -47,12 +47,24 @@ void AbstractIOParser::getWH(int &width, int &height) const {
 
 }
 
+
 QString AbstractIOParser::toARGB32(unsigned char *&rpDst) {
     uchar* tmpBuf = NULL;
     QString mode = getPixels(tmpBuf);
     if (m_iState == SUCC_STATUS) {
         rpDst = new unsigned char[m_iWidth*m_iHeight*4];
-        parsePixels(tmpBuf, rpDst, mode);
+        unsigned char *palBuf = 0;
+        getPals(palBuf);
+        if(palBuf) {
+            unsigned char *tmpBuf2 = 0;
+            parsePals(tmpBuf2, tmpBuf, palBuf, mode);
+            parsePixels(tmpBuf2, rpDst, mode);
+            delete [] tmpBuf2;
+        }
+        else {
+            parsePixels(tmpBuf, rpDst, mode);
+        }
+
     }
     else {
         rpDst = NULL;

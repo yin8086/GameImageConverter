@@ -16,6 +16,7 @@ public:
     void getWH(int &width, int &height) const;
     void setWH(int width, int height)
     {m_iHeight = height; m_iWidth = width;}
+
     QString toARGB32(unsigned char *&rpDst);
     void fromARGB32(unsigned char *pSrc, const QString& mode);
 
@@ -23,7 +24,7 @@ public:
     virtual void setPixels(unsigned char *pSrc) = 0;
     virtual void parsePixels(unsigned char *pSrc, unsigned char *pDst, const QString& mode) = 0;
     virtual void invParsePixels(unsigned char *pSrc, unsigned char *&rpDst, const QString& mode) = 0;
-
+    virtual void parsePals(unsigned char *&rpDst, unsigned char *pSrc, unsigned char *pPal, const QString &mode) = 0;
     virtual QString exportName(const QString& origName, QString& mode) const = 0;
     virtual void getPals(unsigned char *&rpDst) = 0;
     virtual ~AbstractIOParser(){}

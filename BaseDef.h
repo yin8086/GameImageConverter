@@ -1,6 +1,6 @@
 #ifndef BASEDEF_H
 #define BASEDEF_H
-
+#include<stdint.h>
 enum {
     SUCC_STATUS,
     ERR_NORMAL,
