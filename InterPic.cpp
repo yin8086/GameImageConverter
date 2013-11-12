@@ -1,19 +1,22 @@
 #include <QtCore>
-#include "InterPic.h"
 #include "BaseDef.h"
+#include "InterPic.h"
+
 
 
 void InterPic::construct(const QString &fName) {
     m_ptInParser->openFile(fName);
 
     m_sMode = m_ptInParser->toARGB32(m_pcPixelBuf);
-    m_ptInParser->getPals(m_pcPalBuf);
+    //m_ptInParser->getPals(m_pcPalBuf);
     m_ptInParser->getWH(m_iWidth, m_iHeight);
 
+    /*
     if(!m_pcPalBuf)
         m_bIndex = false;
     else
         m_bIndex = true;
+    */
 
     m_ptInParser->closeFile();
     m_iState = m_ptInParser->state();
@@ -22,8 +25,9 @@ void InterPic::construct(const QString &fName) {
 void InterPic::filter() {
     if(m_iState != SUCC_STATUS)
         return;
-    uchar* tarBuf = NULL;
-    m_iState = m_ptFilter->filter(tarBuf, m_pcPixelBuf, m_iWidth, m_iHeight);
+
+    uint8_t* tarBuf = NULL;
+    m_iState = m_ptFilter->filter(tarBuf, m_pcPixelBuf, m_iWidth, m_iHeight, "");
 }
 
 void InterPic::output(const QString& fName) {
@@ -39,10 +43,12 @@ void InterPic::output(const QString& fName) {
 
 
 InterPic::~InterPic() {
+    /*
     if(!m_pcPalBuf) {
         delete [] m_pcPalBuf;
         m_pcPalBuf = NULL;
     }
+    */
     if(!m_pcPixelBuf) {
         delete [] m_pcPixelBuf;
         m_pcPixelBuf = NULL;

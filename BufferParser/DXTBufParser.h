@@ -1,6 +1,5 @@
 #ifndef DXTBUFPARSER_H
 #define DXTBUFPARSER_H
-#include <QtCore>
 #include "BufferParser.h"
 class DXTBufParser: public AbstractBufferParser {
 public:

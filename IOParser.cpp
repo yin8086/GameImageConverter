@@ -1,6 +1,7 @@
+#include <QFile>
 #include "BaseDef.h"
 #include "IOParser.h"
-#include <QFile>
+
 
 AbstractIOParser::AbstractIOParser() {
     m_iState = SUCC_STATUS;

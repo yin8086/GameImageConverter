@@ -1,6 +1,5 @@
 #ifndef ETC1BUFPARSER_H
 #define ETC1BUFPARSER_H
-#include <QtCore>
 #include "BufferParser.h"
 class ETC1BufParser: public AbstractBufferParser {
 public:

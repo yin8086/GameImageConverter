@@ -1,4 +1,5 @@
 #include<QtCore>
+#include "BaseDef.h"
 #include"FilterFac.h"
 #include "ImageFilter/UnityImageFilter.h"
 

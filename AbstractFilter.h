@@ -1,10 +1,9 @@
 #ifndef ABSTRACTFILTER_H
 #define ABSTRACTFILTER_H
-#include <QtCore>
 
 class AbstractImageFilter {
 public:
-    virtual int filter(uchar* &pDst, uchar* pSrc, int width, int height) = 0;
+    virtual int filter(uint8_t* &pDst, uint8_t* pSrc, int width, int height, const QString& mode) = 0;
     virtual ~AbstractImageFilter(){}
 };
 

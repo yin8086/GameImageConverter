@@ -69,4 +69,5 @@ HEADERS += \
     IOParserFac.h \
     BufferParser/DXT1BufParser.h \
     BufferParser/ETC1BufParser.h \
-    IOParser/GzipGimIOParser.h
+    IOParser/GzipGimIOParser.h \
+    ImageFilter/SwizzleFilter.h

@@ -1,6 +1,5 @@
 #ifndef IOPARSER_H
 #define IOPARSER_H
-#include <QtCore>
 class AbstractIOParser {
 protected:
     QFile m_ptOrigF;

@@ -1,6 +1,6 @@
 #ifndef THREADWORKER_H
 #define THREADWORKER_H
-
+#include <QtCore>
 #include <QStringList>
 #include "InterPic.h"
 #define END_MARK "\\ \\ \\"
