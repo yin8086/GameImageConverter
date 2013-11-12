@@ -50,7 +50,7 @@ void AbstractIOParser::getWH(int &width, int &height) const {
 
 
 QString AbstractIOParser::toARGB32(uint8_t *&rpDst) {
-    uchar* tmpBuf = NULL;
+    uint8_t* tmpBuf = NULL;
     QString mode = getPixels(tmpBuf);
     if (m_iState == SUCC_STATUS) {
         rpDst = new uint8_t[m_iWidth*m_iHeight*4];
@@ -76,7 +76,7 @@ QString AbstractIOParser::toARGB32(uint8_t *&rpDst) {
 }
 
 void AbstractIOParser::fromARGB32(uint8_t *pSrc, const QString &mode){
-    uchar* tmpBuf = NULL;
+    uint8_t* tmpBuf = NULL;
     if (m_iState == SUCC_STATUS) {
         invParsePixels(pSrc, tmpBuf, mode);
         setPixels(tmpBuf);

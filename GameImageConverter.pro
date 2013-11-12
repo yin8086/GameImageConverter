@@ -40,7 +40,8 @@ SOURCES += main.cpp \
     IOParserFac.cpp \
     BufferParser/DXT1BufParser.cpp \
     BufferParser/ETC1BufParser.cpp \
-    IOParser/GzipGimIOParser.cpp
+    IOParser/GzipGimIOParser.cpp \
+    ImageFilter/SwizzleFilter.cpp
 
 HEADERS += \
     ThreadWorker.h \

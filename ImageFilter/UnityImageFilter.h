@@ -4,7 +4,7 @@
 
 class UnityImageFilter: public AbstractImageFilter {
 public:
-    int filter(uchar* &pDst, uchar* pSrc, int width, int height, const QString&);
+    int filter(uint8_t* &pDst, uint8_t* pSrc, int width, int height, const QString&);
 };
 
 #endif // UNITYIMAGEFILTER_H

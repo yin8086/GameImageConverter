@@ -113,7 +113,7 @@ QString UnityIOParser::getPixels(uint8_t *&rpDst) {
 
                 m_ptOrigF.seek(m_ptOrigF.size() - imageDataSize);
 
-                rpDst = new uchar[imageSize];
+                rpDst = new uint8_t[imageSize];
                 br.readRawData((char *)rpDst,imageSize);
                 m_iState = SUCC_STATUS;
 
@@ -245,7 +245,7 @@ void UnityIOParser::setPixels(uint8_t *pSrc) {
                         width /= 2;
                         height /= 2;
                         const QImage im = oriIm.scaledToWidth(width,Qt::SmoothTransformation);
-                        uchar* tarBuf = NULL;
+                        uint8_t* tarBuf = NULL;
                         if(pixelSize == 0x0c) { //dxt5 8bpp
                             uint32_t newW = ((width % 4) ? (width/4+1) : (width /4) ) << 2;
                             uint32_t newH = ((height % 4) ? (height/4+1) : (height /4) ) << 2;
