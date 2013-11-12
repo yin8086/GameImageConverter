@@ -4,8 +4,8 @@
 #include"GzipGimIOParser.h"
 
 
-void GzipGimIOParser::GzipUncomp(const char *inBuf,
-                                 char *&outBuf,
+void GzipGimIOParser::GzipUncomp(const uint8_t *inBuf,
+                                 uint8_t *&outBuf,
                                  uint32_t *pSize) {
     if (m_iState != SUCC_STATUS)
         return;
@@ -16,7 +16,7 @@ void GzipGimIOParser::GzipUncomp(const char *inBuf,
     *pSize = 0;
 
     uint32_t firstAddr = *(uint32_t *)(inBuf + 4);
-    strncpy(header, inBuf + firstAddr + 0x10, 3);
+    strncpy(header, (const char *)(inBuf + firstAddr + 0x10), 3);
     if(gzipNum > 0 && strcmp(header, "\x1f\x08\x8b")) {
         ChunkDesc *descTab = new ChunkDesc[gzipNum];
         int offs = 4;
@@ -29,7 +29,7 @@ void GzipGimIOParser::GzipUncomp(const char *inBuf,
             offs += 4;
         }
 
-        outBuf = new char[*pSize];
+        outBuf = new uint8_t[*pSize];
         uint32_t uncompOff = 0;
         for(int i = 0; i < gzipNum; ++i) {
             z_stream strm;
@@ -61,7 +61,7 @@ void GzipGimIOParser::GzipUncomp(const char *inBuf,
         m_iState = ERR_NORMAL;
     }
 }
-void GzipGimIOParser::getPals(unsigned char *&rpDst) {
+void GzipGimIOParser::getPals(uint8_t *&rpDst) {
     if (m_iState != SUCC_STATUS)
         return;
 
@@ -69,11 +69,11 @@ void GzipGimIOParser::getPals(unsigned char *&rpDst) {
     br.setByteOrder(QDataStream::LittleEndian);
 
     m_ptOrigF.seek(0);
-    rpDst = new unsigned char[4*256];
+    rpDst = new uint8_t[4*256];
     br.readRawData((char*)rpDst, 4*256);
 }
 
-QString GzipGimIOParser::getPixels(unsigned char *&rpDst) {
+QString GzipGimIOParser::getPixels(uint8_t *&rpDst) {
     if (m_iState != SUCC_STATUS)
         return "";
 
@@ -96,10 +96,10 @@ QString GzipGimIOParser::getPixels(unsigned char *&rpDst) {
             type = "REG";
 
         //decompress
-        char *compBuf = new char[m_ptOrigF.size() - 0x1800];
+        uint8_t *compBuf = new uint8_t[m_ptOrigF.size() - 0x1800];
         m_ptOrigF.seek(0x1800);
-        br.readRawData(compBuf, m_ptOrigF.size() - 0x1800);
-        char *uncompBuf = 0;
+        br.readRawData((char *)compBuf, m_ptOrigF.size() - 0x1800);
+        uint8_t *uncompBuf = 0;
         uint32_t uncompSize = 0;
         GzipUncomp(compBuf, uncompBuf, &uncompSize);
 
@@ -138,16 +138,16 @@ QString GzipGimIOParser::getPixels(unsigned char *&rpDst) {
         return "";
 }
 
-void GzipGimIOParser::parsePals(unsigned char *&rpDst,
-                                 unsigned char *pSrc,
-                                 unsigned char *pPal,
+void GzipGimIOParser::parsePals(uint8_t *&rpDst,
+                                 uint8_t *pSrc,
+                                 uint8_t *pPal,
                                  const QString& ) {
     if (m_iState != SUCC_STATUS)
         return;
 
-    rpDst = new unsigned char[m_iWidth * m_iHeight * 4];
-    unsigned char *srcL = pSrc, *dstL = rpDst;
-    unsigned char *srcP = 0, *dstP = 0;
+    rpDst = new uint8_t[m_iWidth * m_iHeight * 4];
+    uint8_t *srcL = pSrc, *dstL = rpDst;
+    uint8_t *srcP = 0, *dstP = 0;
     int index = 0;
     for(int y = 0; y < m_iHeight; y++) {
         srcP = srcL; dstP = dstL;
@@ -166,8 +166,8 @@ void GzipGimIOParser::parsePals(unsigned char *&rpDst,
     }
 
 }
-void GzipGimIOParser::parsePixels(unsigned char *pSrc,
-                                  unsigned char *pDst,
+void GzipGimIOParser::parsePixels(uint8_t *pSrc,
+                                  uint8_t *pDst,
                                   const QString &) {
     if (m_iState != SUCC_STATUS)
         return;
@@ -175,12 +175,12 @@ void GzipGimIOParser::parsePixels(unsigned char *pSrc,
     memcpy(pDst, pSrc, m_iWidth * m_iHeight * 4);
 }
 
-void GzipGimIOParser::setPixels(unsigned char *pSrc) {
+void GzipGimIOParser::setPixels(uint8_t *pSrc) {
     if (m_iState != SUCC_STATUS)
         return;
 }
 
-void GzipGimIOParser::invParsePixels(unsigned char *pSrc, unsigned char *&rpDst, const QString &) {
+void GzipGimIOParser::invParsePixels(uint8_t *pSrc, uint8_t *&rpDst, const QString &) {
     if (m_iState != SUCC_STATUS)
         return;
 }

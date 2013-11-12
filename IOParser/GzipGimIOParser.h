@@ -10,18 +10,18 @@ struct ChunkDesc {
 
 class GzipGimIOParser: public AbstractIOParser {
 public:
-    virtual QString getPixels(unsigned char *&rpDst) ;
-    virtual void setPixels(unsigned char *pSrc);
-    virtual void parsePixels(unsigned char *pSrc, unsigned char *pDst, const QString&);
-    virtual void invParsePixels(unsigned char *pSrc, unsigned char *&rpDst, const QString&);
+    virtual QString getPixels(uint8_t *&rpDst) ;
+    virtual void setPixels(uint8_t *pSrc);
+    virtual void parsePixels(uint8_t *pSrc, uint8_t *pDst, const QString&);
+    virtual void invParsePixels(uint8_t *pSrc, uint8_t *&rpDst, const QString&);
 
-    virtual void parsePals(unsigned char *&rpDst,
-                           unsigned char *pSrc,
-                           unsigned char *pPal,
+    virtual void parsePals(uint8_t *&rpDst,
+                           uint8_t *pSrc,
+                           uint8_t *pPal,
                            const QString& );
     virtual QString exportName(const QString& origName, QString& mode) const;
-    virtual void getPals(unsigned char *&rpDst);
+    virtual void getPals(uint8_t *&rpDst);
 private:
-    void GzipUncomp(const char *inBuf, char* &outBuf, uint32_t *pSize);
+    void GzipUncomp(const uint8_t *inBuf, uint8_t *&outBuf, uint32_t *pSize);
 };
 #endif // GZIPGIMIOPARSER_H

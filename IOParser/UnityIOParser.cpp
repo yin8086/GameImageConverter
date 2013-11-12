@@ -27,7 +27,7 @@ UnityIOParser::~UnityIOParser() {
 }
 
 
-QString UnityIOParser::getPixels(unsigned char *&rpDst) {
+QString UnityIOParser::getPixels(uint8_t *&rpDst) {
     if (m_iState != SUCC_STATUS)
         return "";
 
@@ -35,7 +35,7 @@ QString UnityIOParser::getPixels(unsigned char *&rpDst) {
 
     QDataStream br(&m_ptOrigF);
     br.setByteOrder(QDataStream::LittleEndian);
-    quint32 len;
+    uint32_t len;
     br>>len;
 
     m_ptOrigF.seek(m_ptOrigF.pos()+len);
@@ -43,8 +43,8 @@ QString UnityIOParser::getPixels(unsigned char *&rpDst) {
         m_ptOrigF.seek((m_ptOrigF.pos()/4+1)*4);
     }
 
-    quint32 imageDataSize;
-    quint32 pixelSize;
+    uint32_t imageDataSize;
+    uint32_t pixelSize;
     br>>m_iWidth>>m_iHeight>>imageDataSize>>pixelSize;
 
     try {
@@ -55,7 +55,7 @@ QString UnityIOParser::getPixels(unsigned char *&rpDst) {
                       pixelSize == 0x22 || pixelSize == 0x0c ||
                       pixelSize == 0x0a || pixelSize == 0x0d) ){
 
-                quint32 imageSize = m_iWidth*m_iHeight*pixelSize;
+                uint32_t imageSize = m_iWidth*m_iHeight*pixelSize;
 
                 if(pixelSize == 1) {
                     type = "ALPHA8";
@@ -88,14 +88,14 @@ QString UnityIOParser::getPixels(unsigned char *&rpDst) {
                 }
                 else if(pixelSize == 0x0a) {
                     type = "DXT1";
-                    quint32 newW = ((m_iWidth % 4) ? (m_iWidth/4+1) : (m_iWidth /4) ) << 2;
-                    quint32 newH = ((m_iHeight % 4) ? (m_iHeight/4+1) : (m_iHeight /4) ) << 2;
+                    uint32_t newW = ((m_iWidth % 4) ? (m_iWidth/4+1) : (m_iWidth /4) ) << 2;
+                    uint32_t newH = ((m_iHeight % 4) ? (m_iHeight/4+1) : (m_iHeight /4) ) << 2;
                     imageSize = (newW * newH) >> 1;
                 }
                 else if(pixelSize == 0x0c) {
                     type = "DXT5";
-                    quint32 newW = ((m_iWidth % 4) ? (m_iWidth/4+1) : (m_iWidth /4) ) << 2;
-                    quint32 newH = ((m_iHeight % 4) ? (m_iHeight/4+1) : (m_iHeight /4) ) << 2;
+                    uint32_t newW = ((m_iWidth % 4) ? (m_iWidth/4+1) : (m_iWidth /4) ) << 2;
+                    uint32_t newH = ((m_iHeight % 4) ? (m_iHeight/4+1) : (m_iHeight /4) ) << 2;
                     imageSize = newW * newH;
                 }
                 else if(pixelSize == 0x0d) {
@@ -137,13 +137,13 @@ QString UnityIOParser::getPixels(unsigned char *&rpDst) {
 
 }
 
-void UnityIOParser::setPixels(unsigned char *pSrc) {
+void UnityIOParser::setPixels(uint8_t *pSrc) {
     if(m_iState != SUCC_STATUS)
         return;
 
     QDataStream br(&m_ptOrigF);
     br.setByteOrder(QDataStream::LittleEndian);
-    quint32 len;
+    uint32_t len;
     br>>len;
 
     m_ptOrigF.seek(m_ptOrigF.pos()+len);
@@ -151,13 +151,13 @@ void UnityIOParser::setPixels(unsigned char *pSrc) {
         m_ptOrigF.seek((m_ptOrigF.pos()/4+1)*4);
     }
 
-    quint32 width,height;
-    quint32 imageDataSize;
-    quint32 pixelSize;
+    uint32_t width,height;
+    uint32_t imageDataSize;
+    uint32_t pixelSize;
 
     bool modifyWH = false;
     qint64 addrWH = 0;
-    quint32 newSize = 0;
+    uint32_t newSize = 0;
     br>>width>>height>>imageDataSize>>pixelSize;
 
     if(m_ptOrigF.size() > imageDataSize + 20 && imageDataSize > 0) {
@@ -166,21 +166,21 @@ void UnityIOParser::setPixels(unsigned char *pSrc) {
                pixelSize == 0x22 || pixelSize == 0x0c ||
                pixelSize == 0x0a || pixelSize == 0x0d) ){
 
-            quint32 oriImageSize = width*height*pixelSize;
-            quint32 imageSize;
+            uint32_t oriImageSize = width*height*pixelSize;
+            uint32_t imageSize;
 
             if (pixelSize == 0x05)
                 oriImageSize = (width*height)<<2;
             else if(pixelSize == 0x07)
                 oriImageSize = (width*height)<<1;
             else if(pixelSize == 0x0a) { //dxt1
-                quint32 newW = ((width % 4) ? (width/4+1) : (width /4) ) << 2;
-                quint32 newH = ((height % 4) ? (height/4+1) : (height /4) ) << 2;
+                uint32_t newW = ((width % 4) ? (width/4+1) : (width /4) ) << 2;
+                uint32_t newH = ((height % 4) ? (height/4+1) : (height /4) ) << 2;
                 oriImageSize = (newW*newH)>>1;
             }
             else if(pixelSize == 0x0c) {//dxt5
-                quint32 newW = ((width % 4) ? (width/4+1) : (width /4) ) << 2;
-                quint32 newH = ((height % 4) ? (height/4+1) : (height /4) ) << 2;
+                uint32_t newW = ((width % 4) ? (width/4+1) : (width /4) ) << 2;
+                uint32_t newH = ((height % 4) ? (height/4+1) : (height /4) ) << 2;
                 oriImageSize = newW*newH;
             }
             else if(pixelSize == 0x0d)
@@ -189,8 +189,8 @@ void UnityIOParser::setPixels(unsigned char *pSrc) {
                 oriImageSize = (width*height)>>1;
             }
             else if(pixelSize ==0x22) { //etc1
-                quint32 newW = ((width % 4) ? (width/4+1) : (width /4) ) << 2;
-                quint32 newH = ((height % 4) ? (height/4+1) : (height /4) ) << 2;
+                uint32_t newW = ((width % 4) ? (width/4+1) : (width /4) ) << 2;
+                uint32_t newH = ((height % 4) ? (height/4+1) : (height /4) ) << 2;
                 oriImageSize = (newW*newH)>>1;
             }
 
@@ -208,13 +208,13 @@ void UnityIOParser::setPixels(unsigned char *pSrc) {
                 else if(pixelSize == 0x07)
                     imageSize = (width*height)<<1;
                 else if(pixelSize == 0x0a) {
-                    quint32 newW = ((width % 4) ? (width/4+1) : (width /4) ) << 2;
-                    quint32 newH = ((height % 4) ? (height/4+1) : (height /4) ) << 2;
+                    uint32_t newW = ((width % 4) ? (width/4+1) : (width /4) ) << 2;
+                    uint32_t newH = ((height % 4) ? (height/4+1) : (height /4) ) << 2;
                     imageSize = (newW*newH)>>1;
                 }
                 else if(pixelSize == 0x0c){
-                    quint32 newW = ((width % 4) ? (width/4+1) : (width /4) ) << 2;
-                    quint32 newH = ((height % 4) ? (height/4+1) : (height /4) ) << 2;
+                    uint32_t newW = ((width % 4) ? (width/4+1) : (width /4) ) << 2;
+                    uint32_t newH = ((height % 4) ? (height/4+1) : (height /4) ) << 2;
                     imageSize = newW*newH;
                 }
                 else if(pixelSize == 0x0d)
@@ -222,8 +222,8 @@ void UnityIOParser::setPixels(unsigned char *pSrc) {
                 else if(pixelSize ==0x20 || pixelSize == 0x21)
                     imageSize = (width*height)>>1;
                 else if(pixelSize == 0x22) { //etc1
-                    quint32 newW = ((width % 4) ? (width/4+1) : (width /4) ) << 2;
-                    quint32 newH = ((height % 4) ? (height/4+1) : (height /4) ) << 2;
+                    uint32_t newW = ((width % 4) ? (width/4+1) : (width /4) ) << 2;
+                    uint32_t newH = ((height % 4) ? (height/4+1) : (height /4) ) << 2;
                     imageSize = (newW*newH)>>1;
                 }
 
@@ -233,7 +233,7 @@ void UnityIOParser::setPixels(unsigned char *pSrc) {
             }
 
             if(imageSize >= oriImageSize) {
-                quint64 addrData = m_ptOrigF.size() - imageDataSize;
+                uint64_t addrData = m_ptOrigF.size() - imageDataSize;
                 m_ptOrigF.seek(addrData);
 
                 br.writeRawData((const char*)pSrc, imageSize);
@@ -247,13 +247,13 @@ void UnityIOParser::setPixels(unsigned char *pSrc) {
                         const QImage im = oriIm.scaledToWidth(width,Qt::SmoothTransformation);
                         uchar* tarBuf = NULL;
                         if(pixelSize == 0x0c) { //dxt5 8bpp
-                            quint32 newW = ((width % 4) ? (width/4+1) : (width /4) ) << 2;
-                            quint32 newH = ((height % 4) ? (height/4+1) : (height /4) ) << 2;
+                            uint32_t newW = ((width % 4) ? (width/4+1) : (width /4) ) << 2;
+                            uint32_t newH = ((height % 4) ? (height/4+1) : (height /4) ) << 2;
                             imageSize = newW * newH;
                         }
                         else if(pixelSize == 0x0a || pixelSize == 0x22) { //dxt1 or etc1 4bpp
-                            quint32 newW = ((width % 4) ? (width/4+1) : (width /4) ) << 2;
-                            quint32 newH = ((height % 4) ? (height/4+1) : (height /4) ) << 2;
+                            uint32_t newW = ((width % 4) ? (width/4+1) : (width /4) ) << 2;
+                            uint32_t newH = ((height % 4) ? (height/4+1) : (height /4) ) << 2;
                             imageSize = (newW * newH)>>1;
                         }
                         else
@@ -284,13 +284,13 @@ void UnityIOParser::setPixels(unsigned char *pSrc) {
 }
 
 
-void UnityIOParser::getPals(unsigned char *&rpDst) {
+void UnityIOParser::getPals(uint8_t *&rpDst) {
     if (m_iState != SUCC_STATUS)
         return;
     rpDst = NULL;
 }
 
-void UnityIOParser::parsePixels(unsigned char *pSrc, unsigned char *pDst, const QString &mode) {
+void UnityIOParser::parsePixels(uint8_t *pSrc, uint8_t *pDst, const QString &mode) {
     if (m_iState != SUCC_STATUS)
         return;
     else if(!pSrc) {
@@ -307,14 +307,14 @@ void UnityIOParser::parsePixels(unsigned char *pSrc, unsigned char *pDst, const 
     }
 }
 
-void UnityIOParser::invParsePixels(unsigned char *pSrc, unsigned char *&rpDst, const QString &mode) {
+void UnityIOParser::invParsePixels(uint8_t *pSrc, uint8_t *&rpDst, const QString &mode) {
     if (m_iState != SUCC_STATUS)
         return;
     else if(!pSrc) {
         m_iState = ERR_NORMAL;
     }
     else {
-        m_ptOriBuf = new unsigned char[m_iWidth * m_iHeight * 4];
+        m_ptOriBuf = new uint8_t[m_iWidth * m_iHeight * 4];
         memcpy(m_ptOriBuf, pSrc, m_iWidth * m_iHeight * 4);
         m_ptParser = m_ptBufFac->createBufParser(mode);
         if (m_ptParser) {
@@ -334,9 +334,9 @@ QString UnityIOParser::exportName(const QString &origName, QString &mode) const 
     return binName;
 }
 
-void UnityIOParser::parsePals(unsigned char *&,
-                                 unsigned char *,
-                                 unsigned char *,
+void UnityIOParser::parsePals(uint8_t *&,
+                                 uint8_t *,
+                                 uint8_t *,
                                  const QString& ) {
 
 }

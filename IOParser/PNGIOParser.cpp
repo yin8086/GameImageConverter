@@ -1,22 +1,23 @@
 #include<QtCore>
 #include<QImage>
-#include "PNGIOParser.h"
 #include "BaseDef.h"
+#include "PNGIOParser.h"
 
 
-void PNGIOParser::invParsePixels(unsigned char *pSrc, unsigned char *&rpDst, const QString&) {
+
+void PNGIOParser::invParsePixels(uint8_t *pSrc, uint8_t *&rpDst, const QString&) {
     if(m_iState != SUCC_STATUS)
         return;
     else if(!pSrc) {
         m_iState = ERR_NORMAL;
     }
     else {
-        rpDst = new unsigned char[m_iWidth*m_iHeight*4];
+        rpDst = new uint8_t[m_iWidth*m_iHeight*4];
         memcpy(rpDst, pSrc, sizeof(char) * m_iWidth * m_iHeight * 4);
         m_iState = SUCC_STATUS;
     }
 }
-void PNGIOParser::setPixels(unsigned char *pSrc) {
+void PNGIOParser::setPixels(uint8_t *pSrc) {
     if(m_iState != SUCC_STATUS)
         return;
     else if(!pSrc) {
@@ -29,7 +30,7 @@ void PNGIOParser::setPixels(unsigned char *pSrc) {
     }
 }
 
-QString PNGIOParser::getPixels(unsigned char *&rpDst) {
+QString PNGIOParser::getPixels(uint8_t *&rpDst) {
     if(m_iState != SUCC_STATUS)
         return "";
     QImage im;
@@ -39,7 +40,7 @@ QString PNGIOParser::getPixels(unsigned char *&rpDst) {
             im = im.convertToFormat(QImage::Format_ARGB32);
         m_iWidth = im.width();
         m_iHeight = im.height();
-        rpDst = new unsigned char [m_iWidth * m_iHeight * 4];
+        rpDst = new uint8_t [m_iWidth * m_iHeight * 4];
         memcpy(rpDst, im.bits(), m_iWidth * m_iHeight * 4);
         m_iState = SUCC_STATUS;
 
@@ -49,7 +50,7 @@ QString PNGIOParser::getPixels(unsigned char *&rpDst) {
     return "";
 }
 
-void PNGIOParser::parsePixels(unsigned char *pSrc, unsigned char *pDst, const QString &mode) {
+void PNGIOParser::parsePixels(uint8_t *pSrc, uint8_t *pDst, const QString &mode) {
     if(m_iState != SUCC_STATUS)
         return;
     else if(!pSrc) {
@@ -59,7 +60,7 @@ void PNGIOParser::parsePixels(unsigned char *pSrc, unsigned char *pDst, const QS
         memcpy(pDst, pSrc, m_iWidth*m_iHeight*4);
 }
 
-void PNGIOParser::getPals(unsigned char *&) {
+void PNGIOParser::getPals(uint8_t *&) {
 
 }
 
@@ -68,9 +69,9 @@ QString PNGIOParser::exportName(const QString &origName, QString &mode) const {
 }
 
 
-void PNGIOParser::parsePals(unsigned char *&,
-                                 unsigned char *,
-                                 unsigned char *,
+void PNGIOParser::parsePals(uint8_t *&,
+                                 uint8_t *,
+                                 uint8_t *,
                                  const QString& ) {
 
 }

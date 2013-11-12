@@ -1,5 +1,5 @@
-#include "IOParser.h"
 #include "BaseDef.h"
+#include "IOParser.h"
 #include <QFile>
 
 AbstractIOParser::AbstractIOParser() {
@@ -22,7 +22,7 @@ void AbstractIOParser::openFile(const QString& fName) {
 }
 
 void AbstractIOParser::closeFile() {
-    quint64 fSize = -1;
+    uint64_t fSize = -1;
     if(m_ptOrigF.isOpen()) {
         fSize = m_ptOrigF.size();
         m_ptOrigF.close();
@@ -48,15 +48,15 @@ void AbstractIOParser::getWH(int &width, int &height) const {
 }
 
 
-QString AbstractIOParser::toARGB32(unsigned char *&rpDst) {
+QString AbstractIOParser::toARGB32(uint8_t *&rpDst) {
     uchar* tmpBuf = NULL;
     QString mode = getPixels(tmpBuf);
     if (m_iState == SUCC_STATUS) {
-        rpDst = new unsigned char[m_iWidth*m_iHeight*4];
-        unsigned char *palBuf = 0;
+        rpDst = new uint8_t[m_iWidth*m_iHeight*4];
+        uint8_t *palBuf = 0;
         getPals(palBuf);
         if(palBuf) {
-            unsigned char *tmpBuf2 = 0;
+            uint8_t *tmpBuf2 = 0;
             parsePals(tmpBuf2, tmpBuf, palBuf, mode);
             parsePixels(tmpBuf2, rpDst, mode);
             delete [] tmpBuf2;
@@ -74,7 +74,7 @@ QString AbstractIOParser::toARGB32(unsigned char *&rpDst) {
     return mode;
 }
 
-void AbstractIOParser::fromARGB32(unsigned char *pSrc, const QString &mode){
+void AbstractIOParser::fromARGB32(uint8_t *pSrc, const QString &mode){
     uchar* tmpBuf = NULL;
     if (m_iState == SUCC_STATUS) {
         invParsePixels(pSrc, tmpBuf, mode);

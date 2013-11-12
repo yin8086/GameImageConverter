@@ -3,12 +3,12 @@
 #include "BufferParser.h"
 class ARGB8888BufParser: public AbstractBufferParser {
 public:
-    QString parse(const unsigned char *pSrc,
-                  unsigned char *pDst,
+    QString parse(const uint8_t *pSrc,
+                  uint8_t *pDst,
                   int width,
                   int height);
-    void invParse(const unsigned char *pSrc,
-                  unsigned char *&rpDst,
+    void invParse(const uint8_t *pSrc,
+                  uint8_t *&rpDst,
                   int width,
                   int height);
 };

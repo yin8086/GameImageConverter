@@ -1,12 +1,13 @@
 #ifndef INTERPIC_H
 #define INTERPIC_H
 #include <QtCore>
+#include "BaseDef.h"
 #include "IOParser.h"
 #include "AbstractFilter.h"
 class InterPic {
 
-    unsigned char *m_pcPixelBuf;
-    unsigned char *m_pcPalBuf;
+    uint8_t *m_pcPixelBuf;
+    uint8_t *m_pcPalBuf;
 
     int m_iWidth;
     int m_iHeight;

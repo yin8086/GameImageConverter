@@ -17,16 +17,16 @@ public:
     void setWH(int width, int height)
     {m_iHeight = height; m_iWidth = width;}
 
-    QString toARGB32(unsigned char *&rpDst);
-    void fromARGB32(unsigned char *pSrc, const QString& mode);
+    QString toARGB32(uint8_t *&rpDst);
+    void fromARGB32(uint8_t *pSrc, const QString& mode);
 
-    virtual QString getPixels(unsigned char *&rpDst) = 0;
-    virtual void setPixels(unsigned char *pSrc) = 0;
-    virtual void parsePixels(unsigned char *pSrc, unsigned char *pDst, const QString& mode) = 0;
-    virtual void invParsePixels(unsigned char *pSrc, unsigned char *&rpDst, const QString& mode) = 0;
-    virtual void parsePals(unsigned char *&rpDst, unsigned char *pSrc, unsigned char *pPal, const QString &mode) = 0;
+    virtual QString getPixels(uint8_t *&rpDst) = 0;
+    virtual void setPixels(uint8_t *pSrc) = 0;
+    virtual void parsePixels(uint8_t *pSrc, uint8_t *pDst, const QString& mode) = 0;
+    virtual void invParsePixels(uint8_t *pSrc, uint8_t *&rpDst, const QString& mode) = 0;
+    virtual void parsePals(uint8_t *&rpDst, uint8_t *pSrc, uint8_t *pPal, const QString &mode) = 0;
     virtual QString exportName(const QString& origName, QString& mode) const = 0;
-    virtual void getPals(unsigned char *&rpDst) = 0;
+    virtual void getPals(uint8_t *&rpDst) = 0;
     virtual ~AbstractIOParser(){}
 };
 #endif // IOPARSER_H

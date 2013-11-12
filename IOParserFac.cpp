@@ -1,4 +1,5 @@
 #include <QtCore>
+#include "BaseDef.h"
 #include "IOParserFac.h"
 #include "IOParser/PNGIOParser.h"
 #include "IOParser/UnityIOParser.h"

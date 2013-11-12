@@ -1,4 +1,5 @@
 #include <QtCore>
+#include "BaseDef.h"
 #include "NorBufParFac.h"
 
 #include "BufferParser/AlphaBufParser.h"

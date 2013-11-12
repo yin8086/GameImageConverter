@@ -1,11 +1,12 @@
 #include <QtCore>
 #include <QString>
+#include "BaseDef.h"
 #include "RGBA4444BufParser.h"
 
 
-QString RGBA4444BufParser::parse(const unsigned char *pSrc, unsigned char *pDst, int width, int height) {
+QString RGBA4444BufParser::parse(const uint8_t *pSrc, uint8_t *pDst, int width, int height) {
     for(int i = 0, j = 0; i < (width * height) << 1; i += 2, j += 4) {
-        quint16 tmpData=*(quint16 *)(pSrc + i);
+        uint16_t tmpData=*(uint16_t *)(pSrc + i);
         pDst[j]     = ( ( (tmpData & 0xf0) >> 4) * 255 + 7) / 15; //b
         pDst[j + 1]   = ( ( (tmpData&0xf00) >> 8) * 255+7) / 15; //g
         pDst[j + 2]   = ( ( (tmpData&0xf000) >> 12) * 255+7) / 15; //r
@@ -14,17 +15,17 @@ QString RGBA4444BufParser::parse(const unsigned char *pSrc, unsigned char *pDst,
     return "RGBA4444";
 }
 
-void RGBA4444BufParser::invParse(const unsigned char *pSrc, unsigned char *&rpDst, int width, int height) {
-    quint16 pixelVal = 0;
-    quint16 r,g,b,a;
-    rpDst = new unsigned char [(width * height) << 1];
+void RGBA4444BufParser::invParse(const uint8_t *pSrc, uint8_t *&rpDst, int width, int height) {
+    uint16_t pixelVal = 0;
+    uint16_t r,g,b,a;
+    rpDst = new uint8_t [(width * height) << 1];
     for(int i = 0, j = 0; i < (width * height) << 1; i += 2, j += 4) {
         r = (pSrc[j+2]   * 15 + 127) / 255;
         g = (pSrc[j+1] * 15 + 127) / 255;
         b = (pSrc[j]  * 15 + 127) / 255;
         a = (pSrc[j+3] * 15 + 127) / 255;
         pixelVal=(r<<12)|(g<<8)|(b<<4)|a;
-        *(quint16*)(rpDst+i) = pixelVal;
+        *(uint16_t*)(rpDst+i) = pixelVal;
     }
 
 }
