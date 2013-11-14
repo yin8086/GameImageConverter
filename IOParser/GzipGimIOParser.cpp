@@ -101,10 +101,10 @@ QString GzipGimIOParser::getPixels(uint8_t *&rpDst) {
                 char mapBuf[0x30] = {0};
 
                 br.readRawData(mapBuf,0x30);
-                m_iWidth = *(uint16_t *)mapBuf[0x1c];
-                m_iHeight = *(uint16_t *)mapBuf[0x1e];
+                m_iWidth = *(uint16_t *)(mapBuf + 0x1c);
+                m_iHeight = *(uint16_t *)(mapBuf + 0x1e);
 
-                if(*(uint16_t *)mapBuf[0x1a] != 0)
+                if(*(uint16_t *)(mapBuf + 0x1a) != 0)
                     type = "FACE";
 
             }
@@ -149,7 +149,13 @@ void GzipGimIOParser::fromIndexed(uint8_t *pDst, uint8_t *pSrc) {
         srcP = srcL; dstP = dstL;
         for(int x = 0; x < m_iWidth; ++x) {
             index = *srcP++;
-            *dstP++ = *((uint32_t *)pPal + index);
+            //*dstP++ = *((uint32_t *)pPal + index);
+            *((uint8_t *)dstP + 0) = pPal[index*4 + 2];
+            *((uint8_t *)dstP + 1) = pPal[index*4 + 1];
+            *((uint8_t *)dstP + 2) = pPal[index*4 + 0];
+            *((uint8_t *)dstP + 3) = pPal[index*4 + 3];
+
+            dstP++;
         }
         srcL += m_iWidth;
         dstL += m_iWidth;
