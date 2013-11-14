@@ -61,11 +61,9 @@ QMutex ImgThread::m_Mutex;
 ImgThread::ImgThread(int iMode, int oMode):
             QThread(),m_iInType(iMode), m_iOutType(oMode) {
     IOParserFactory inFac;
-    FilterFactory fFac;
     IOParserFactory oPFac;
 
     m_InParser = inFac.createIOParser(m_iInType);
-    m_Filter = fFac.createFilter(m_iInType, m_iOutType);
     m_OutParser = oPFac.createIOParser(m_iOutType);
 
     start();
@@ -75,7 +73,6 @@ ImgThread::~ImgThread() {
     wait();
 
     delete m_InParser;
-    delete m_Filter;
     delete m_OutParser;
 }
 
@@ -116,11 +113,6 @@ void ImgThread::run() {
             InterPic interPic;
             interPic.setInParser(m_InParser);
             interPic.construct(m_curImgName);
-
-            if(m_Filter) {
-                interPic.setFilter(m_Filter);
-                interPic.filter();
-            }
 
             interPic.setOutParser(m_OutParser);
             interPic.output(m_curImgName);

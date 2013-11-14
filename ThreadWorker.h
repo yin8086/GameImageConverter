@@ -14,7 +14,6 @@ class ImgThread: public QThread {
     QWaitCondition m_ready;
 
     AbstractIOParser* m_InParser;
-    AbstractImageFilter *m_Filter;
     AbstractIOParser *m_OutParser;
 
     static QQueue<QString> m_imgList;

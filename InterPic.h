@@ -17,7 +17,6 @@ class InterPic {
 
     AbstractIOParser *m_ptInParser;
     AbstractIOParser *m_ptOutParser;
-    AbstractImageFilter *m_ptFilter;
 
 public:
     InterPic():m_pcPixelBuf(NULL), /*m_pcPalBuf(0),*/
@@ -25,10 +24,8 @@ public:
         m_iState(0){}
 
     void setInParser(AbstractIOParser *rhs) {m_ptInParser = rhs;}
-    void setFilter(AbstractImageFilter *rhs) {m_ptFilter = rhs;}
     void setOutParser(AbstractIOParser *rhs) {m_ptOutParser =rhs;}
     void construct(const QString& fName);
-    void filter();
     void output(const QString& fName);
     int state() const {return m_iState;}
     ~InterPic();

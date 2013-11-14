@@ -22,13 +22,6 @@ void InterPic::construct(const QString &fName) {
     m_iState = m_ptInParser->state();
 }
 
-void InterPic::filter() {
-    if(m_iState != SUCC_STATUS)
-        return;
-
-    uint8_t* tarBuf = NULL;
-    m_iState = m_ptFilter->filter(tarBuf, m_pcPixelBuf, m_iWidth, m_iHeight, "");
-}
 
 void InterPic::output(const QString& fName) {
     if(m_iState != SUCC_STATUS)
