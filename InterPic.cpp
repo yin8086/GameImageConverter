@@ -8,15 +8,7 @@ void InterPic::construct(const QString &fName) {
     m_ptInParser->openFile(fName);
 
     m_sMode = m_ptInParser->toARGB32(m_pcPixelBuf);
-    //m_ptInParser->getPals(m_pcPalBuf);
     m_ptInParser->getWH(m_iWidth, m_iHeight);
-
-    /*
-    if(!m_pcPalBuf)
-        m_bIndex = false;
-    else
-        m_bIndex = true;
-    */
 
     m_ptInParser->closeFile();
     m_iState = m_ptInParser->state();

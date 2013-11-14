@@ -10,6 +10,7 @@ UnityIOParser::UnityIOParser():AbstractIOParser() {
     m_ptBufFac = new NormalBufParserFac();
     m_ptParser = NULL;
     m_ptOriBuf = NULL;
+    m_bMapped = true;
 
     QSettings settings("GIConverter.ini", QSettings::IniFormat);
     settings.setIniCodec("UTF-8");
@@ -284,11 +285,6 @@ void UnityIOParser::setPixels(uint8_t *pSrc) {
 }
 
 
-void UnityIOParser::getPals(uint8_t *&rpDst) {
-    if (m_iState != SUCC_STATUS)
-        return;
-    rpDst = NULL;
-}
 
 void UnityIOParser::parsePixels(uint8_t *pSrc, uint8_t *pDst, const QString &mode) {
     if (m_iState != SUCC_STATUS)
@@ -334,9 +330,20 @@ QString UnityIOParser::exportName(const QString &origName, QString &mode) const 
     return binName;
 }
 
-void UnityIOParser::parsePals(uint8_t *&,
-                                 uint8_t *,
-                                 uint8_t *,
-                                 const QString& ) {
+void UnityIOParser::fromMapped(uint8_t *pDst, uint8_t *pSrc) {
+    if (m_iState != SUCC_STATUS)
+        return;
 
+    QImage im(pSrc, m_iWidth, m_iHeight, QImage::Format_ARGB32);
+    im = im.mirrored(false,true);
+    memcpy(pDst, im.bits(), sizeof(uint8_t) * m_iWidth * m_iHeight * 4);
+}
+
+void UnityIOParser::toMapped(uint8_t *pDst, uint8_t *pSrc) {
+    if (m_iState != SUCC_STATUS)
+        return;
+
+    QImage im(pSrc, m_iWidth, m_iHeight, QImage::Format_ARGB32);
+    im = im.mirrored(false,true);
+    memcpy(pDst, im.bits(), sizeof(uint8_t) * m_iWidth * m_iHeight * 4);
 }

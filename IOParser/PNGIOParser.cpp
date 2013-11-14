@@ -60,18 +60,8 @@ void PNGIOParser::parsePixels(uint8_t *pSrc, uint8_t *pDst, const QString &mode)
         memcpy(pDst, pSrc, m_iWidth*m_iHeight*4);
 }
 
-void PNGIOParser::getPals(uint8_t *&) {
-
-}
 
 QString PNGIOParser::exportName(const QString &origName, QString &mode) const {
     return QObject::tr("%1.%2.png").arg(origName).arg(mode);
 }
 
-
-void PNGIOParser::parsePals(uint8_t *&,
-                                 uint8_t *,
-                                 uint8_t *,
-                                 const QString& ) {
-
-}

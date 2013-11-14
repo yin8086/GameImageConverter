@@ -7,6 +7,8 @@ AbstractIOParser::AbstractIOParser() {
     m_iState = SUCC_STATUS;
     m_iWidth = -1;
     m_iHeight = -1;
+    m_bIndexed = false;
+    m_bMapped = false;
 }
 
 void AbstractIOParser::openFile(const QString& fName) {
@@ -54,16 +56,23 @@ QString AbstractIOParser::toARGB32(uint8_t *&rpDst) {
     QString mode = getPixels(tmpBuf);
     if (m_iState == SUCC_STATUS) {
         rpDst = new uint8_t[m_iWidth*m_iHeight*4];
-        uint8_t *palBuf = 0;
-        getPals(palBuf);
-        if(palBuf) {
-            uint8_t *tmpBuf2 = 0;
-            parsePals(tmpBuf2, tmpBuf, palBuf, mode);
-            parsePixels(tmpBuf2, rpDst, mode);
-            delete [] tmpBuf2;
+
+        if(m_bIndexed) { // index value to color value
+            fromIndexed(rpDst, tmpBuf);
         }
-        else {
-            parsePixels(tmpBuf, rpDst, mode);
+
+        // change color to RGBA(byte order)
+        parsePixels(tmpBuf, rpDst, mode);
+
+        if(m_bMapped) { //map the RGBA image
+            uint8_t *tmpBuf2 = new uint8_t[m_iWidth*m_iHeight*4];
+            fromMapped(tmpBuf2, rpDst);
+
+            uint8_t *pTmp = rpDst;
+            rpDst = tmpBuf2;
+            tmpBuf2 = pTmp;
+
+            delete[] tmpBuf2;
         }
 
     }
@@ -78,8 +87,33 @@ QString AbstractIOParser::toARGB32(uint8_t *&rpDst) {
 void AbstractIOParser::fromARGB32(uint8_t *pSrc, const QString &mode){
     uint8_t* tmpBuf = NULL;
     if (m_iState == SUCC_STATUS) {
-        invParsePixels(pSrc, tmpBuf, mode);
-        setPixels(tmpBuf);
+        uint8_t *tmpBuf2 = 0;
+
+        if(m_bMapped) { //map the RGBA image
+            tmpBuf2 = new uint8_t[m_iWidth*m_iHeight*4];
+            toMapped(tmpBuf2, pSrc);
+        }
+        else {
+            tmpBuf2 = pSrc;
+        }
+
+        //change RGBA color to destination
+        invParsePixels(tmpBuf2, tmpBuf, mode);
+
+        uint8_t *tmpBuf3 = 0;
+        if(m_bIndexed) { // map it indexed
+            toIndexed(tmpBuf3, tmpBuf2);
+        }
+        else {
+            tmpBuf3 = tmpBuf2;
+        }
+
+        setPixels(tmpBuf3);
+        if(m_bMapped)
+            delete[] tmpBuf2;
+        if(m_bIndexed)
+            delete[] tmpBuf3;
+
     }
     delete [] tmpBuf;
 }

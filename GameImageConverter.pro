@@ -41,7 +41,8 @@ SOURCES += main.cpp \
     BufferParser/DXT1BufParser.cpp \
     BufferParser/ETC1BufParser.cpp \
     IOParser/GzipGimIOParser.cpp \
-    ImageFilter/SwizzleFilter.cpp
+    ImageFilter/SwizzleFilter.cpp \
+    utility/swizzleUtility.cpp
 
 HEADERS += \
     ThreadWorker.h \
@@ -71,4 +72,5 @@ HEADERS += \
     BufferParser/DXT1BufParser.h \
     BufferParser/ETC1BufParser.h \
     IOParser/GzipGimIOParser.h \
-    ImageFilter/SwizzleFilter.h
+    ImageFilter/SwizzleFilter.h \
+    utility/swizzleUtility.h

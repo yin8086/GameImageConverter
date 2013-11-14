@@ -2,6 +2,7 @@
 #include<zlib.h>
 #include"BaseDef.h"
 #include"GzipGimIOParser.h"
+#include "utility/swizzleUtility.h"
 
 
 void GzipGimIOParser::GzipUncomp(const uint8_t *inBuf,
@@ -60,17 +61,6 @@ void GzipGimIOParser::GzipUncomp(const uint8_t *inBuf,
         outBuf = 0;
         m_iState = ERR_NORMAL;
     }
-}
-void GzipGimIOParser::getPals(uint8_t *&rpDst) {
-    if (m_iState != SUCC_STATUS)
-        return;
-
-    QDataStream br(&m_ptOrigF);
-    br.setByteOrder(QDataStream::LittleEndian);
-
-    m_ptOrigF.seek(0);
-    rpDst = new uint8_t[4*256];
-    br.readRawData((char*)rpDst, 4*256);
 }
 
 QString GzipGimIOParser::getPixels(uint8_t *&rpDst) {
@@ -138,34 +128,41 @@ QString GzipGimIOParser::getPixels(uint8_t *&rpDst) {
         return "";
 }
 
-void GzipGimIOParser::parsePals(uint8_t *&rpDst,
-                                 uint8_t *pSrc,
-                                 uint8_t *pPal,
-                                 const QString& ) {
+
+void GzipGimIOParser::fromIndexed(uint8_t *pDst, uint8_t *pSrc) {
+
     if (m_iState != SUCC_STATUS)
         return;
 
-    rpDst = new uint8_t[m_iWidth * m_iHeight * 4];
-    uint8_t *srcL = pSrc, *dstL = rpDst;
-    uint8_t *srcP = 0, *dstP = 0;
-    int index = 0;
+    QDataStream br(&m_ptOrigF);
+    br.setByteOrder(QDataStream::LittleEndian);
+
+    m_ptOrigF.seek(0);
+    uint8_t *pPal = new uint8_t[4*256];
+    br.readRawData((char*)pPal, 4*256);
+
+    uint8_t *srcL = pSrc, *srcP = 0;
+    uint32_t *dstP = 0, *dstL = (uint32_t *)pDst;
+
+    uint8_t index = 0;
     for(int y = 0; y < m_iHeight; y++) {
         srcP = srcL; dstP = dstL;
         for(int x = 0; x < m_iWidth; ++x) {
-            index = *srcP;
-            dstP[0] = pPal[index];
-            dstP[1] = pPal[index + 1];
-            dstP[2] = pPal[index + 2];
-            dstP[3] = pPal[index + 3];
-
-            dstP += 4;
-            srcP += 1;
+            index = *srcP++;
+            *dstP++ = *((uint32_t *)pPal + index);
         }
         srcL += m_iWidth;
-        dstL += (m_iWidth*4);
+        dstL += m_iWidth;
     }
 
 }
+
+void GzipGimIOParser::toIndexed(uint8_t *&rpDst, uint8_t *pSrc) {
+    // todo
+
+}
+
+
 void GzipGimIOParser::parsePixels(uint8_t *pSrc,
                                   uint8_t *pDst,
                                   const QString &) {
@@ -194,4 +191,19 @@ QString GzipGimIOParser::exportName(const QString &origName, QString &mode) cons
     mode = testStr.right(testStr.length() - binName.length() - 1);
     return binName;
 }
+
+void GzipGimIOParser::fromMapped(uint8_t *pDst, uint8_t *pSrc) {
+    if (m_iState != SUCC_STATUS)
+        return;
+    unswizzleARGB(pDst, pSrc, m_iWidth, m_iHeight);
+
+}
+
+void GzipGimIOParser::toMapped(uint8_t *pDst, uint8_t *pSrc) {
+    if (m_iState != SUCC_STATUS)
+        return;
+    swizzleARGB(pDst, pSrc, m_iWidth, m_iHeight);
+}
+
+
 
