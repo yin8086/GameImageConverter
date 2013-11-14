@@ -5,6 +5,11 @@
 #include "utility/swizzleUtility.h"
 
 
+GzipGimIOParser::GzipGimIOParser():AbstractIOParser() {
+    m_bIndexed= true;
+    m_bMapped = true;
+}
+
 void GzipGimIOParser::GzipUncomp(const uint8_t *inBuf,
                                  uint8_t *&outBuf,
                                  uint32_t *pSize) {
@@ -109,7 +114,7 @@ QString GzipGimIOParser::getPixels(uint8_t *&rpDst) {
 
             }
             else {
-                m_iWidth = 480;
+                m_iWidth = 512;
                 m_iHeight = 272;
             }
 
@@ -129,7 +134,7 @@ QString GzipGimIOParser::getPixels(uint8_t *&rpDst) {
 }
 
 
-void GzipGimIOParser::fromIndexed(uint8_t *pDst, uint8_t *pSrc) {
+void GzipGimIOParser::fromIndexed(uint8_t *&rpDst, uint8_t *pSrc) {
 
     if (m_iState != SUCC_STATUS)
         return;
@@ -141,8 +146,9 @@ void GzipGimIOParser::fromIndexed(uint8_t *pDst, uint8_t *pSrc) {
     uint8_t *pPal = new uint8_t[4*256];
     br.readRawData((char*)pPal, 4*256);
 
+    rpDst = new uint8_t[m_iWidth*m_iHeight*4];
     uint8_t *srcL = pSrc, *srcP = 0;
-    uint32_t *dstP = 0, *dstL = (uint32_t *)pDst;
+    uint32_t *dstP = 0, *dstL = (uint32_t *)rpDst;
 
     uint8_t index = 0;
     for(int y = 0; y < m_iHeight; y++) {

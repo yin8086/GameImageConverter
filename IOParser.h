@@ -26,7 +26,7 @@ public:
     virtual void parsePixels(uint8_t *pSrc, uint8_t *pDst, const QString& mode) = 0;
     virtual void invParsePixels(uint8_t *pSrc, uint8_t *&rpDst, const QString& mode) = 0;
     virtual QString exportName(const QString& origName, QString& mode) const = 0;
-    virtual void fromIndexed(uint8_t *pDst, uint8_t *pSrc) = 0;
+    virtual void fromIndexed(uint8_t *&rpDst, uint8_t *pSrc) = 0;
     virtual void fromMapped(uint8_t *pDst, uint8_t *pSrc) = 0;
     virtual void toIndexed(uint8_t *&rpDst, uint8_t *pSrc) = 0;
     virtual void toMapped(uint8_t *pDst, uint8_t *pSrc) = 0;

@@ -57,22 +57,31 @@ QString AbstractIOParser::toARGB32(uint8_t *&rpDst) {
     if (m_iState == SUCC_STATUS) {
         rpDst = new uint8_t[m_iWidth*m_iHeight*4];
 
+        uint8_t *tmpBuf2 = 0;
         if(m_bIndexed) { // index value to color value
-            fromIndexed(rpDst, tmpBuf);
+            fromIndexed(tmpBuf2, tmpBuf);
+        }
+        else {
+            tmpBuf2 = tmpBuf;
         }
 
         // change color to RGBA(byte order)
-        parsePixels(tmpBuf, rpDst, mode);
+        parsePixels(tmpBuf2, rpDst, mode);
+
+        if(m_bIndexed)
+            delete[] tmpBuf2;
+
+        uint8_t *tmpBuf3;
 
         if(m_bMapped) { //map the RGBA image
-            uint8_t *tmpBuf2 = new uint8_t[m_iWidth*m_iHeight*4];
-            fromMapped(tmpBuf2, rpDst);
+            tmpBuf3 = new uint8_t[m_iWidth*m_iHeight*4];
+            fromMapped(tmpBuf3, rpDst);
 
             uint8_t *pTmp = rpDst;
-            rpDst = tmpBuf2;
-            tmpBuf2 = pTmp;
+            rpDst = tmpBuf3;
+            tmpBuf3 = pTmp;
 
-            delete[] tmpBuf2;
+            delete[] tmpBuf3;
         }
 
     }
