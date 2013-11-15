@@ -11,6 +11,7 @@ GzipGimIOParser::GzipGimIOParser():AbstractIOParser() {
 }
 
 void GzipGimIOParser::GzipUncomp(const uint8_t *inBuf,
+                                 uint32_t inSize,
                                  uint8_t *&outBuf,
                                  uint32_t *pSize) {
     if (m_iState != SUCC_STATUS)
@@ -22,49 +23,55 @@ void GzipGimIOParser::GzipUncomp(const uint8_t *inBuf,
     *pSize = 0;
 
     uint32_t firstAddr = *(uint32_t *)(inBuf + 4);
-    strncpy(header, (const char *)(inBuf + firstAddr + 0x10), 3);
-    if(gzipNum > 0 && strcmp(header, "\x1f\x08\x8b")) {
-        ChunkDesc *descTab = new ChunkDesc[gzipNum];
-        int offs = 4;
+    if(firstAddr + 0x10 < inSize) {
+        strncpy(header, (const char *)(inBuf + firstAddr + 0x10), 3);
+        if(gzipNum > 0 && !strcmp(header, "\x1f\x8b\x08")) {
+            ChunkDesc *descTab = new ChunkDesc[gzipNum];
+            int offs = 4;
 
-        for(int i = 0; i < gzipNum; ++i) {
-            descTab[i].start = *(uint32_t *)(inBuf + offs);
-            descTab[i].end = *(uint32_t *)(inBuf + offs + 4);
-            descTab[i].decomLen = *(uint32_t *)(inBuf + descTab[i].start);
-            *pSize += descTab[i].decomLen;
-            offs += 4;
-        }
-
-        outBuf = new uint8_t[*pSize];
-        uint32_t uncompOff = 0;
-        for(int i = 0; i < gzipNum; ++i) {
-            z_stream strm;
-            strm.next_in = (Bytef *) (inBuf + descTab[i].start + 0x10);
-            strm.avail_in = descTab[i].end - descTab[i].start - 0x10;
-            strm.zalloc = Z_NULL;
-            strm.zfree = Z_NULL;
-            inflateInit2(&strm, 16 + MAX_WBITS);
-
-            strm.next_out = (Bytef *)(outBuf + uncompOff);
-            strm.avail_out = descTab[i].decomLen;
-
-            int status_do = inflate(&strm, Z_FINISH);
-            int status_end = inflateEnd(&strm);
-
-            if (status_do != Z_STREAM_END || status_end != Z_OK) {
-                m_iState = ERR_NORMAL;
+            for(int i = 0; i < gzipNum; ++i) {
+                descTab[i].start = *(uint32_t *)(inBuf + offs);
+                descTab[i].end = *(uint32_t *)(inBuf + offs + 4);
+                descTab[i].decomLen = *(uint32_t *)(inBuf + descTab[i].start);
+                *pSize += descTab[i].decomLen;
+                offs += 4;
             }
 
-            uncompOff += descTab[i].decomLen;
+            outBuf = new uint8_t[*pSize];
+            uint32_t uncompOff = 0;
+            for(int i = 0; i < gzipNum; ++i) {
+                z_stream strm;
+                strm.next_in = (Bytef *) (inBuf + descTab[i].start + 0x10);
+                strm.avail_in = descTab[i].end - descTab[i].start - 0x10;
+                strm.zalloc = Z_NULL;
+                strm.zfree = Z_NULL;
+                inflateInit2(&strm, 16 + MAX_WBITS);
+
+                strm.next_out = (Bytef *)(outBuf + uncompOff);
+                strm.avail_out = descTab[i].decomLen;
+
+                int status_do = inflate(&strm, Z_FINISH);
+                int status_end = inflateEnd(&strm);
+
+                if (status_do != Z_STREAM_END || status_end != Z_OK) {
+                    m_iState = ERR_NORMAL;
+                }
+
+                uncompOff += descTab[i].decomLen;
 
 
+            }
+
+            delete []descTab;
         }
-
-        delete []descTab;
+        else {
+            outBuf = 0;
+            m_iState = ERR_NORMAL;
+        }
     }
     else {
         outBuf = 0;
-        m_iState = ERR_NORMAL;
+        m_iState = ERR_NOT_IMAGE;
     }
 }
 
@@ -96,7 +103,7 @@ QString GzipGimIOParser::getPixels(uint8_t *&rpDst) {
         br.readRawData((char *)compBuf, m_ptOrigF.size() - 0x1800);
         uint8_t *uncompBuf = 0;
         uint32_t uncompSize = 0;
-        GzipUncomp(compBuf, uncompBuf, &uncompSize);
+        GzipUncomp(compBuf, m_ptOrigF.size() - 0x1800, uncompBuf, &uncompSize);
 
         if(m_iState == SUCC_STATUS) { //return indexed pixels
             rpDst = uncompBuf;

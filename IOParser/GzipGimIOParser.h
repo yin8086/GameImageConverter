@@ -21,6 +21,6 @@ public:
     virtual void toIndexed(uint8_t *&rpDst, uint8_t *pSrc);
     virtual void toMapped(uint8_t *pDst, uint8_t *pSrc);
 private:
-    void GzipUncomp(const uint8_t *inBuf, uint8_t *&outBuf, uint32_t *pSize);
+    void GzipUncomp(const uint8_t *inBuf, uint32_t inSize, uint8_t *&outBuf, uint32_t *pSize);
 };
 #endif // GZIPGIMIOPARSER_H
