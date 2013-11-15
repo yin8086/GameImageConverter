@@ -5,7 +5,6 @@
 #include "BaseDef.h"
 #include "ThreadWorker.h"
 #include "IOParserFac.h"
-#include "FilterFac.h"
 #include "ThreadLogger.h"
 
 int ThreadWorker::work() {

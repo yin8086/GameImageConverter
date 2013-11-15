@@ -66,7 +66,7 @@ void GzipGimIOParser::GzipUncomp(const uint8_t *inBuf,
         }
         else {
             outBuf = 0;
-            m_iState = ERR_NORMAL;
+            m_iState = ERR_NOT_IMAGE;
         }
     }
     else {
@@ -214,14 +214,14 @@ QString GzipGimIOParser::exportName(const QString &origName, QString &mode) cons
 void GzipGimIOParser::fromMapped(uint8_t *pDst, uint8_t *pSrc) {
     if (m_iState != SUCC_STATUS)
         return;
-    unswizzleARGB(pDst, pSrc, m_iWidth, m_iHeight);
+    unswizzleARGB(pDst, pSrc, m_iWidth, m_iHeight, SWIZZLE16x8);
 
 }
 
 void GzipGimIOParser::toMapped(uint8_t *pDst, uint8_t *pSrc) {
     if (m_iState != SUCC_STATUS)
         return;
-    swizzleARGB(pDst, pSrc, m_iWidth, m_iHeight);
+    swizzleARGB(pDst, pSrc, m_iWidth, m_iHeight, SWIZZLE16x8);
 }
 
 

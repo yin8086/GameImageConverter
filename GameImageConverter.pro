@@ -30,8 +30,6 @@ SOURCES += main.cpp \
     BufferParser/ARGB4444BufParser.cpp \
     BufferParser/PVRCT4BufParser.cpp \
     InterPic.cpp \
-    ImageFilter/UnityImageFilter.cpp \
-    FilterFac.cpp \
     ThreadLogger.cpp \
     BufferParser/DXTBufParser.cpp \
     IOParser.cpp \
@@ -41,7 +39,6 @@ SOURCES += main.cpp \
     BufferParser/DXT1BufParser.cpp \
     BufferParser/ETC1BufParser.cpp \
     IOParser/GzipGimIOParser.cpp \
-    ImageFilter/SwizzleFilter.cpp \
     utility/swizzleUtility.cpp
 
 HEADERS += \
@@ -60,9 +57,6 @@ HEADERS += \
     BufferParser/ARGB4444BufParser.h \
     BufferParser/PVRCT4BufParser.h \
     BaseDef.h \
-    AbstractFilter.h \
-    ImageFilter/UnityImageFilter.h \
-    FilterFac.h \
     ThreadLogger.h \
     BufferParser/DXTBufParser.h \
     IOParser.h \
@@ -72,5 +66,4 @@ HEADERS += \
     BufferParser/DXT1BufParser.h \
     BufferParser/ETC1BufParser.h \
     IOParser/GzipGimIOParser.h \
-    ImageFilter/SwizzleFilter.h \
     utility/swizzleUtility.h

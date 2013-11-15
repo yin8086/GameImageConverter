@@ -2,7 +2,6 @@
 #define INTERPIC_H
 #include "BaseDef.h"
 #include "IOParser.h"
-#include "AbstractFilter.h"
 class InterPic {
 
     uint8_t *m_pcPixelBuf;
