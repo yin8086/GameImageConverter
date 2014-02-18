@@ -100,7 +100,10 @@ QString UnityIOParser::getPixels(uint8_t *&rpDst) {
                     imageSize = newW * newH;
                 }
                 else if(pixelSize == 0x0d) {
-                    type = "RGBA4444";
+                    if(0 == m_iDefault16bpp)
+                        type = "RGBA4444";
+                    else if(1 == m_iDefault16bpp)
+                        type = "ARGB1555";
                     imageSize = (m_iWidth*m_iHeight)<<1;
                 }
                 else if(pixelSize == 0x21 || pixelSize == 0x20) {
