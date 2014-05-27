@@ -54,7 +54,8 @@ QString UnityIOParser::getPixels(uint8_t *&rpDst) {
             if ( (1 <= pixelSize && pixelSize <=7 && pixelSize != 6) ||
                     ( pixelSize == 0x20 ||pixelSize == 0x21 ||
                       pixelSize == 0x22 || pixelSize == 0x0c ||
-                      pixelSize == 0x0a || pixelSize == 0x0d) ){
+                      pixelSize == 0x0a || pixelSize == 0x0d ||
+                      pixelSize == 0x24) ){
 
                 uint32_t imageSize = m_iWidth*m_iHeight*pixelSize;
 
@@ -93,7 +94,7 @@ QString UnityIOParser::getPixels(uint8_t *&rpDst) {
                     uint32_t newH = ((m_iHeight % 4) ? (m_iHeight/4+1) : (m_iHeight /4) ) << 2;
                     imageSize = (newW * newH) >> 1;
                 }
-                else if(pixelSize == 0x0c) {
+                else if(pixelSize == 0x0c ) {
                     type = "DXT5";
                     uint32_t newW = ((m_iWidth % 4) ? (m_iWidth/4+1) : (m_iWidth /4) ) << 2;
                     uint32_t newH = ((m_iHeight % 4) ? (m_iHeight/4+1) : (m_iHeight /4) ) << 2;
@@ -110,6 +111,13 @@ QString UnityIOParser::getPixels(uint8_t *&rpDst) {
                 else if(pixelSize == 0x22) {
                     type = "ETC1";
                     imageSize = (m_iWidth*m_iHeight)>>1;
+                }
+                else if(pixelSize == 0x24)
+                {
+                    type = "ATCI";
+                    uint32_t newW = ((m_iWidth % 4) ? (m_iWidth/4+1) : (m_iWidth /4) ) << 2;
+                    uint32_t newH = ((m_iHeight % 4) ? (m_iHeight/4+1) : (m_iHeight /4) ) << 2;
+                    imageSize = newW * newH;
                 }
 
                 m_ptOrigF.seek(m_ptOrigF.size() - imageDataSize);
@@ -165,7 +173,8 @@ void UnityIOParser::setPixels(uint8_t *pSrc) {
         if ( (1 <= pixelSize && pixelSize <=7 && pixelSize != 6) ||
              ( pixelSize == 0x20 ||pixelSize == 0x21 ||
                pixelSize == 0x22 || pixelSize == 0x0c ||
-               pixelSize == 0x0a || pixelSize == 0x0d) ){
+               pixelSize == 0x0a || pixelSize == 0x0d ||
+               pixelSize == 0x24) ){
 
             uint32_t oriImageSize = width*height*pixelSize;
             uint32_t imageSize;
@@ -179,7 +188,7 @@ void UnityIOParser::setPixels(uint8_t *pSrc) {
                 uint32_t newH = ((height % 4) ? (height/4+1) : (height /4) ) << 2;
                 oriImageSize = (newW*newH)>>1;
             }
-            else if(pixelSize == 0x0c) {//dxt5
+            else if(pixelSize == 0x0c || pixelSize == 0x24) { //dxt5, ATCI
                 uint32_t newW = ((width % 4) ? (width/4+1) : (width /4) ) << 2;
                 uint32_t newH = ((height % 4) ? (height/4+1) : (height /4) ) << 2;
                 oriImageSize = newW*newH;
@@ -213,7 +222,7 @@ void UnityIOParser::setPixels(uint8_t *pSrc) {
                     uint32_t newH = ((height % 4) ? (height/4+1) : (height /4) ) << 2;
                     imageSize = (newW*newH)>>1;
                 }
-                else if(pixelSize == 0x0c){
+                else if(pixelSize == 0x0c || pixelSize == 0x24){
                     uint32_t newW = ((width % 4) ? (width/4+1) : (width /4) ) << 2;
                     uint32_t newH = ((height % 4) ? (height/4+1) : (height /4) ) << 2;
                     imageSize = newW*newH;
@@ -247,7 +256,7 @@ void UnityIOParser::setPixels(uint8_t *pSrc) {
                         height /= 2;
                         const QImage im = oriIm.scaledToWidth(width,Qt::SmoothTransformation);
                         uint8_t* tarBuf = NULL;
-                        if(pixelSize == 0x0c) { //dxt5 8bpp
+                        if(pixelSize == 0x0c || pixelSize == 0x24) { //dxt5 ATCI 8bpp
                             uint32_t newW = ((width % 4) ? (width/4+1) : (width /4) ) << 2;
                             uint32_t newH = ((height % 4) ? (height/4+1) : (height /4) ) << 2;
                             imageSize = newW * newH;
