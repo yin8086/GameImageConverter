@@ -52,36 +52,38 @@ void AbstractIOParser::getWH(int &width, int &height) const {
 
 
 QString AbstractIOParser::toARGB32(uint8_t *&rpDst) {
-    uint8_t* tmpBuf = NULL;
-    QString mode = getPixels(tmpBuf);
+    uint8_t* srcBuf = NULL;
+    QString mode = getPixels(srcBuf);
     if (m_iState == SUCC_STATUS) {
         rpDst = new uint8_t[m_iWidth*m_iHeight*4];
 
-        uint8_t *tmpBuf2 = 0;
+        uint8_t *indexedBuf = 0;
         if(m_bIndexed) { // index value to color value
-            fromIndexed(tmpBuf2, tmpBuf);
+            fromIndexed(indexedBuf, srcBuf); //dst src
         }
         else {
-            tmpBuf2 = tmpBuf;
+            indexedBuf = srcBuf;
         }
 
         // change color to RGBA(byte order)
-        parsePixels(tmpBuf2, rpDst, mode);
+        parsePixels(indexedBuf, rpDst, mode); //src dst
 
-        if(m_bIndexed)
-            delete[] tmpBuf2;
+        if(m_bIndexed) {
+            delete[] indexedBuf;
+            indexedBuf = 0;
+        }
 
-        uint8_t *tmpBuf3;
+        uint8_t *mappedBuf = 0;
 
         if(m_bMapped) { //map the RGBA image
-            tmpBuf3 = new uint8_t[m_iWidth*m_iHeight*4];
-            fromMapped(tmpBuf3, rpDst);
+            mappedBuf = new uint8_t[m_iWidth*m_iHeight*4];
+            fromMapped(mappedBuf, rpDst); // dst src
 
             uint8_t *pTmp = rpDst;
-            rpDst = tmpBuf3;
-            tmpBuf3 = pTmp;
+            rpDst = mappedBuf;
+            mappedBuf = pTmp;
 
-            delete[] tmpBuf3;
+            delete[] mappedBuf;
         }
 
     }
@@ -89,40 +91,44 @@ QString AbstractIOParser::toARGB32(uint8_t *&rpDst) {
         rpDst = NULL;
         mode = "";
     }
-    delete [] tmpBuf;
+    delete [] srcBuf;
     return mode;
 }
 
 void AbstractIOParser::fromARGB32(uint8_t *pSrc, const QString &mode){
-    uint8_t* tmpBuf = NULL;
+    uint8_t* parsedBuf = NULL;
     if (m_iState == SUCC_STATUS) {
-        uint8_t *tmpBuf2 = 0;
+        uint8_t *mappedBuf = 0;
 
         if(m_bMapped) { //map the RGBA image
-            tmpBuf2 = new uint8_t[m_iWidth*m_iHeight*4];
-            toMapped(tmpBuf2, pSrc);
+            mappedBuf = new uint8_t[m_iWidth*m_iHeight*4];
+            toMapped(mappedBuf, pSrc);// dst, src
         }
         else {
-            tmpBuf2 = pSrc;
+            mappedBuf = pSrc;
         }
 
         //change RGBA color to destination
-        invParsePixels(tmpBuf2, tmpBuf, mode);
+        invParsePixels(mappedBuf, parsedBuf, mode); // src, dst
 
-        uint8_t *tmpBuf3 = 0;
+        uint8_t *indexedBuf = 0;
         if(m_bIndexed) { // map it indexed
-            toIndexed(tmpBuf3, tmpBuf2);
+            toIndexed(indexedBuf, parsedBuf); // dst, src
         }
         else {
-            tmpBuf3 = tmpBuf2;
+            indexedBuf = parsedBuf;
         }
 
-        setPixels(tmpBuf3);
-        if(m_bMapped)
-            delete[] tmpBuf2;
-        if(m_bIndexed)
-            delete[] tmpBuf3;
+        setPixels(indexedBuf);
+        if(m_bMapped) {
+            delete[] mappedBuf;
+            mappedBuf = 0;
+        }
+        if(m_bIndexed) {
+            delete[] indexedBuf;
+            indexedBuf = 0;
+        }
 
     }
-    delete [] tmpBuf;
+    delete [] parsedBuf;
 }

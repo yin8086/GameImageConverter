@@ -41,12 +41,14 @@ QString ATCIBufParser::parse(const uint8_t *pSrc, uint8_t *pDst, int width, int 
 
 void ATCIBufParser::invParse(const uint8_t *pSrc, uint8_t *&rpDst, int width, int height) {
 
+
     int bufW = ((width % 4) ? (width/4+1) : (width /4) ) << 2;
     int bufH = ((height % 4) ? (height/4+1) : (height /4) ) << 2;
 
     rpDst = new uint8_t [(bufW * bufH)]; // create the target buffer
 
     uint8_t *pTile = rpDst; // pointer to the given block
+
 
     for(int posY = 0; posY < height; posY += 4){
         for(int posX = 0; posX < width; posX += 4) {
@@ -85,6 +87,7 @@ void ATCIBufParser::invParse(const uint8_t *pSrc, uint8_t *&rpDst, int width, in
 
         }
     }
+
 }
 
 #define CLAMP(curV, minV, maxV) qMax((minV), qMin( (curV), (maxV)));
