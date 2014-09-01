@@ -3,17 +3,17 @@
 #include <QString>
 #include "squish.h"
 #include "BaseDef.h"
-#include "ATCIBufParser.h"
+#include "ATCBufParser.h"
 
-const unsigned ATCIBufParser::MAX_COLOR_VAL = 255;
+const unsigned ATCBufParser::MAX_COLOR_VAL = 255;
 
-QString ATCIBufParser::parse(const uint8_t *pSrc, uint8_t *pDst, int width, int height) {
+QString ATCBufParser::parse(const uint8_t *pSrc, uint8_t *pDst, int width, int height) {
     const uint8_t *pTile = pSrc;
 
     for(int posY = 0; posY < height; posY += 4){
         for(int posX = 0; posX < width; posX += 4) {
             uint8_t tarRgba[16*4];
-            DecompressATCI(pTile, tarRgba);
+            DecompressATC(pTile, tarRgba);
 
             uint8_t *pSrcBlk = tarRgba;
             for(int y = 0; y < 4; y++) {
@@ -32,20 +32,20 @@ QString ATCIBufParser::parse(const uint8_t *pSrc, uint8_t *pDst, int width, int 
                 }
             }
 
-        pTile += 16;
+        pTile += 8; // 8Byte = 64bits/16 pixels = 4bpp
         }
     }
 
-    return "ATCI";
+    return "ATC";
 }
 
-void ATCIBufParser::invParse(const uint8_t *pSrc, uint8_t *&rpDst, int width, int height) {
+void ATCBufParser::invParse(const uint8_t *pSrc, uint8_t *&rpDst, int width, int height) {
 
 
     int bufW = ((width % 4) ? (width/4+1) : (width /4) ) << 2;
     int bufH = ((height % 4) ? (height/4+1) : (height /4) ) << 2;
 
-    rpDst = new uint8_t [(bufW * bufH)]; // create the target buffer
+    rpDst = new uint8_t [(bufW * bufH)>>1]; // create the target buffer
 
     uint8_t *pTile = rpDst; // pointer to the given block
 
@@ -80,10 +80,10 @@ void ATCIBufParser::invParse(const uint8_t *pSrc, uint8_t *&rpDst, int width, in
                 }
             }
 
-            squish::Compress(srcRgba, pTile, squish::kDxt5);
-            DXTC2ATCI(pTile);
+            squish::Compress(srcRgba, pTile, squish::kDxt1);
+            DXTC2ATC(pTile);
 
-            pTile += 16;
+            pTile += 8;
 
         }
     }
@@ -92,10 +92,9 @@ void ATCIBufParser::invParse(const uint8_t *pSrc, uint8_t *&rpDst, int width, in
 
 #define CLAMP(curV, minV, maxV) qMax((minV), qMin( (curV), (maxV)));
 
-void ATCIBufParser::DecompressATCI(const uint8_t* block, uint8_t *rgba)
+void ATCBufParser::DecompressATC(const uint8_t* block, uint8_t *rgba)
 {
-    const uint8_t *colorBlk = block + 8;
-    const uint8_t *alphaBlk = block;
+    const uint8_t *colorBlk = block;
 
     uint8_t codeBook[16];
     uint8_t r1,g1,b1,r2,b2,g2,gBit;
@@ -113,6 +112,7 @@ void ATCIBufParser::DecompressATCI(const uint8_t* block, uint8_t *rgba)
     r2 = (tmpVal >> 11) & 0x1f;
     g2 = (tmpVal >> 5) & 0x3f;
     b2 = tmpVal & 0x1f;
+
 
     if(gBit == 0)
     {
@@ -175,54 +175,7 @@ void ATCIBufParser::DecompressATCI(const uint8_t* block, uint8_t *rgba)
         rgba[i*4 + 0] = codeBook[ indices[i]*4 + 0];
         rgba[i*4 + 1] = codeBook[ indices[i]*4 + 1];
         rgba[i*4 + 2] = codeBook[ indices[i]*4 + 2];
-        //rgba[i*4 + 3] = 255;
-    }
-
-    // 2. Decompresss Alpha
-    int a1 = alphaBlk[0];
-    int a2 = alphaBlk[1];
-
-    // Reuse codeBook pos 0-7
-
-    codeBook[0] = (uint8_t)a1;
-    codeBook[1] = (uint8_t)a2;
-    if(a1 <= a2)
-    {
-        for(int i=1; i<5; ++i)
-            codeBook[1 + i] = (uint8_t)( ( (5-i)*a1 + i*a2 )/5 );
-        codeBook[6] = 0;
-        codeBook[7] = 255;
-    }
-    else
-    {
-        for(int i=1; i<7; ++i)
-            codeBook[1 + i] = (uint8_t)( ( (7-i)*a1 + i*a2 )/7 );
-    }
-
-    // Reuse indices
-    const uint8_t* src = alphaBlk + 2;
-    uint8_t* dest = indices;
-    for( int i = 0; i < 2; ++i ) // iterate two 3 bytes (2*3bytes)
-    {
-        // grab 3 bytes
-        int value = 0;
-        for( int j = 0; j < 3; ++j )
-        {
-            int byte = *src++;
-            value |= ( byte << 8*j );
-        }
-
-        // unpack 8 3-bit values from it
-        for( int j = 0; j < 8; ++j )
-        {
-            int index = ( value >> 3*j ) & 0x7;
-            *dest++ = ( uint8_t )index;
-        }
-    }
-
-    for(int i=0; i<16; ++i)
-    {
-        rgba[i*4 + 3] = codeBook[indices[i]];
+        rgba[i*4 + 3] = 255;  // all alpha set to 255
     }
 
 }
@@ -232,9 +185,9 @@ void ATCIBufParser::DecompressATCI(const uint8_t* block, uint8_t *rgba)
 /// from the src of squinsh, we can know that squinsh
 /// will never compress the texture to punch through alpha
 /// that is to say, the output block is always: color1 > color2
-void ATCIBufParser::DXTC2ATCI(uint8_t* block)
+void ATCBufParser::DXTC2ATC(uint8_t* block)
 {
-    uint8_t *colorBlk = block + 8;
+    uint8_t *colorBlk = block;
 
     uint16_t color1 = *(uint16_t *)(colorBlk);
     uint16_t color2 = *(uint16_t *)(colorBlk+2);

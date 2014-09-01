@@ -1,7 +1,7 @@
-#ifndef ATCIBUFPARSER_H
-#define ATCIBUFPARSER_H
+#ifndef ATCBUFPARSER_H
+#define ATCBUFPARSER_H
 #include "BufferParser.h"
-class ATCIBufParser: public AbstractBufferParser {
+class ATCBufParser: public AbstractBufferParser {
 public:
     QString parse(const uint8_t *pSrc,
                   uint8_t *pDst,
@@ -14,8 +14,8 @@ public:
 private:
     static const unsigned MAX_COLOR_VAL;
 
-    void DecompressATCI(const uint8_t* block, uint8_t *rgba);
-    void DXTC2ATCI(uint8_t* block);
+    void DecompressATC(const uint8_t* block, uint8_t *rgba);
+    void DXTC2ATC(uint8_t* block);
 
 };
-#endif // ATCIBUFPARSER_H
+#endif // ATCBUFPARSER_H

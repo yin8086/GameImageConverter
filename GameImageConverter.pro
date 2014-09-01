@@ -40,7 +40,8 @@ SOURCES += main.cpp \
     BufferParser/ETC1BufParser.cpp \
     IOParser/GzipGimIOParser.cpp \
     utility/swizzleUtility.cpp \
-    BufferParser/ATCIBufParser.cpp
+    BufferParser/ATCIBufParser.cpp \
+    BufferParser/ATCBufParser.cpp
 
 HEADERS += \
     ThreadWorker.h \
@@ -68,4 +69,5 @@ HEADERS += \
     BufferParser/ETC1BufParser.h \
     IOParser/GzipGimIOParser.h \
     utility/swizzleUtility.h \
-    BufferParser/ATCIBufParser.h
+    BufferParser/ATCIBufParser.h \
+    BufferParser/ATCBufParser.h

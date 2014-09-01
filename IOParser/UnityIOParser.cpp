@@ -55,7 +55,7 @@ QString UnityIOParser::getPixels(uint8_t *&rpDst) {
                     ( pixelSize == 0x20 ||pixelSize == 0x21 ||
                       pixelSize == 0x22 || pixelSize == 0x0c ||
                       pixelSize == 0x0a || pixelSize == 0x0d ||
-                      pixelSize == 0x24) ){
+                      pixelSize == 0x24 || pixelSize == 0x2e) ){
 
                 uint32_t imageSize = m_iWidth*m_iHeight*pixelSize;
 
@@ -119,6 +119,13 @@ QString UnityIOParser::getPixels(uint8_t *&rpDst) {
                     uint32_t newH = ((m_iHeight % 4) ? (m_iHeight/4+1) : (m_iHeight /4) ) << 2;
                     imageSize = newW * newH;
                 }
+                else if(pixelSize == 0x2e)
+                {
+                    type = "ATC";
+                    uint32_t newW = ((m_iWidth % 4) ? (m_iWidth/4+1) : (m_iWidth /4) ) << 2;
+                    uint32_t newH = ((m_iHeight % 4) ? (m_iHeight/4+1) : (m_iHeight /4) ) << 2;
+                    imageSize = (newW * newH) >> 1;
+                }
 
                 m_ptOrigF.seek(m_ptOrigF.size() - imageDataSize);
 
@@ -174,7 +181,7 @@ void UnityIOParser::setPixels(uint8_t *pSrc) {
              ( pixelSize == 0x20 ||pixelSize == 0x21 ||
                pixelSize == 0x22 || pixelSize == 0x0c ||
                pixelSize == 0x0a || pixelSize == 0x0d ||
-               pixelSize == 0x24) ){
+               pixelSize == 0x24 || pixelSize == 0x2e) ){
 
             uint32_t oriImageSize = width*height*pixelSize;
             uint32_t imageSize;
@@ -183,7 +190,7 @@ void UnityIOParser::setPixels(uint8_t *pSrc) {
                 oriImageSize = (width*height)<<2;
             else if(pixelSize == 0x07)
                 oriImageSize = (width*height)<<1;
-            else if(pixelSize == 0x0a) { //dxt1
+            else if(pixelSize == 0x0a || pixelSize == 0x2e || pixelSize ==0x22) { //dxt3, etc1, ATC
                 uint32_t newW = ((width % 4) ? (width/4+1) : (width /4) ) << 2;
                 uint32_t newH = ((height % 4) ? (height/4+1) : (height /4) ) << 2;
                 oriImageSize = (newW*newH)>>1;
@@ -198,11 +205,7 @@ void UnityIOParser::setPixels(uint8_t *pSrc) {
             else if(pixelSize ==0x20 || pixelSize == 0x21) {
                 oriImageSize = (width*height)>>1;
             }
-            else if(pixelSize ==0x22) { //etc1
-                uint32_t newW = ((width % 4) ? (width/4+1) : (width /4) ) << 2;
-                uint32_t newH = ((height % 4) ? (height/4+1) : (height /4) ) << 2;
-                oriImageSize = (newW*newH)>>1;
-            }
+
 
             if (width != m_iWidth || height != m_iHeight) {
                 modifyWH = true;
@@ -217,7 +220,7 @@ void UnityIOParser::setPixels(uint8_t *pSrc) {
                     imageSize = (width*height)<<2;
                 else if(pixelSize == 0x07)
                     imageSize = (width*height)<<1;
-                else if(pixelSize == 0x0a) {
+                else if(pixelSize == 0x0a || pixelSize == 0x2e || pixelSize ==0x22) { //dxt3, etc1, ATC
                     uint32_t newW = ((width % 4) ? (width/4+1) : (width /4) ) << 2;
                     uint32_t newH = ((height % 4) ? (height/4+1) : (height /4) ) << 2;
                     imageSize = (newW*newH)>>1;
@@ -231,11 +234,6 @@ void UnityIOParser::setPixels(uint8_t *pSrc) {
                     imageSize = (width*height)<<1;
                 else if(pixelSize ==0x20 || pixelSize == 0x21)
                     imageSize = (width*height)>>1;
-                else if(pixelSize == 0x22) { //etc1
-                    uint32_t newW = ((width % 4) ? (width/4+1) : (width /4) ) << 2;
-                    uint32_t newH = ((height % 4) ? (height/4+1) : (height /4) ) << 2;
-                    imageSize = (newW*newH)>>1;
-                }
 
             }
             else {
@@ -261,7 +259,7 @@ void UnityIOParser::setPixels(uint8_t *pSrc) {
                             uint32_t newH = ((height % 4) ? (height/4+1) : (height /4) ) << 2;
                             imageSize = newW * newH;
                         }
-                        else if(pixelSize == 0x0a || pixelSize == 0x22) { //dxt1 or etc1 4bpp
+                        else if(pixelSize == 0x0a || pixelSize == 0x22 || pixelSize == 0x2e) { //dxt3,etc1,atc 4bpp
                             uint32_t newW = ((width % 4) ? (width/4+1) : (width /4) ) << 2;
                             uint32_t newH = ((height % 4) ? (height/4+1) : (height /4) ) << 2;
                             imageSize = (newW * newH)>>1;
