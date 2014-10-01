@@ -1,10 +1,15 @@
-#ifndef PNGIOPARSER_H
-#define PNGIOPARSER_H
+#ifndef TDXTIOPARSER_H
+#define TDXTIOPARSER_H
 #include "IOParser.h"
+#include "BufParFactory.h"
+#include "BufferParser.h"
 
-class PNGIOParser: public AbstractIOParser {
+class TDXTIOParser: public AbstractIOParser {
+    AbstractBufParseFactory *m_ptBufFac;
+    AbstractBufferParser *m_ptParser;
 public:
-    virtual QString getPixels(uint8_t *&rpDst);
+    TDXTIOParser();
+    virtual QString getPixels(uint8_t *&rpDst) ;
     virtual void setPixels(uint8_t *pSrc);
     virtual void parsePixels(uint8_t *pSrc, uint8_t *pDst, const QString& mode);
     virtual void invParsePixels(uint8_t *pSrc, uint8_t *&rpDst, const QString&);
@@ -14,4 +19,4 @@ public:
     virtual void toIndexed(uint8_t *&, uint8_t *){}
     virtual void toMapped(uint8_t *, uint8_t *){}
 };
-#endif // PNGIOPARSER_H
+#endif // TDXTIOPARSER_H

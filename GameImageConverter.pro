@@ -20,7 +20,6 @@ LIBS += -L../GameImageConverter/lib -lpvrtc -lsquish -lrg_etc1 -lz
 SOURCES += main.cpp \
     ThreadWorker.cpp \
     BufferParser/AlphaBufParser.cpp \
-    BufParserFac/NorBufParFac.cpp \
     BufferParser/RGBA4444BufParser.cpp \
     BufferParser/ARGB1555BufParser.cpp \
     BufferParser/RGBA8888BufParser.cpp \
@@ -41,7 +40,9 @@ SOURCES += main.cpp \
     IOParser/GzipGimIOParser.cpp \
     utility/swizzleUtility.cpp \
     BufferParser/ATCIBufParser.cpp \
-    BufferParser/ATCBufParser.cpp
+    BufferParser/ATCBufParser.cpp \
+    NorBufParFac.cpp \
+    IOParser/TDXTIOParser.cpp
 
 HEADERS += \
     ThreadWorker.h \
@@ -49,7 +50,6 @@ HEADERS += \
     BufferParser.h \
     BufferParser/AlphaBufParser.h \
     BufParFactory.h \
-    BufParserFac/NorBufParFac.h \
     BufferParser/RGBA4444BufParser.h \
     BufferParser/ARGB1555BufParser.h \
     BufferParser/RGB565BufParser.h \
@@ -70,4 +70,6 @@ HEADERS += \
     IOParser/GzipGimIOParser.h \
     utility/swizzleUtility.h \
     BufferParser/ATCIBufParser.h \
-    BufferParser/ATCBufParser.h
+    BufferParser/ATCBufParser.h \
+    NorBufParFac.h \
+    IOParser/TDXTIOParser.h

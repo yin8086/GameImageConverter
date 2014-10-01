@@ -4,7 +4,7 @@
 #include <QImage>
 #include "BaseDef.h"
 #include "UnityIOParser.h"
-#include "BufParserFac/NorBufParFac.h"
+#include "NorBufParFac.h"
 
 UnityIOParser::UnityIOParser():AbstractIOParser() {
     m_ptBufFac = new NormalBufParserFac();
