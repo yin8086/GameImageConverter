@@ -252,7 +252,7 @@ void UnityIOParser::setPixels(uint8_t *pSrc) {
                     // test mipmap
                     uint64_t estimateSize = imageSize;
                     uint64_t testImageSize = imageSize;
-                    int tW = width, tH = heigth;
+                    int tW = width, tH = height;
                     while(tW/2 >=1 && tH/2 >=1) {
                         tW /= 2;
                         tH /= 2;
