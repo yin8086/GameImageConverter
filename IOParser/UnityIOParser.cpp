@@ -247,30 +247,61 @@ void UnityIOParser::setPixels(uint8_t *pSrc) {
                 br.writeRawData((const char*)pSrc, imageSize);
                 newSize += imageSize;
 
-                if(oriImageSize != imageDataSize) { //mipmap
-                    const QImage oriIm(m_ptOriBuf, width, height, QImage::Format_ARGB32);
-                    while(width/2 >=1 && height/2 >=1) {
-                        width /= 2;
-                        height /= 2;
-                        const QImage im = oriIm.scaledToWidth(width,Qt::SmoothTransformation);
-                        uint8_t* tarBuf = NULL;
+
+                if(oriImageSize != imageDataSize) { //mipmap ?
+                    // test mipmap
+                    uint64_t estimateSize = imageSize;
+                    uint64_t testImageSize = imageSize;
+                    int tW = width, tH = heigth;
+                    while(tW/2 >=1 && tH/2 >=1) {
+                        tW /= 2;
+                        tH /= 2;
+
                         if(pixelSize == 0x0c || pixelSize == 0x24) { //dxt5 ATCI 8bpp
-                            uint32_t newW = ((width % 4) ? (width/4+1) : (width /4) ) << 2;
-                            uint32_t newH = ((height % 4) ? (height/4+1) : (height /4) ) << 2;
-                            imageSize = newW * newH;
+                            uint32_t newW = ((tW % 4) ? (tW/4+1) : (tW /4) ) << 2;
+                            uint32_t newH = ((tH % 4) ? (tH/4+1) : (tH /4) ) << 2;
+                            testImageSize = newW * newH;
                         }
                         else if(pixelSize == 0x0a || pixelSize == 0x22 || pixelSize == 0x2e) { //dxt3,etc1,atc 4bpp
-                            uint32_t newW = ((width % 4) ? (width/4+1) : (width /4) ) << 2;
-                            uint32_t newH = ((height % 4) ? (height/4+1) : (height /4) ) << 2;
-                            imageSize = (newW * newH)>>1;
+                            uint32_t newW = ((tW % 4) ? (tW/4+1) : (tW /4) ) << 2;
+                            uint32_t newH = ((tH % 4) ? (tH/4+1) : (tH /4) ) << 2;
+                            testImageSize = (newW * newH)>>1;
                         }
-                        else
-                            imageSize /= 4;
-                        m_ptParser->invParse(im.bits(), tarBuf, width, height);
-                        br.writeRawData((const char*)tarBuf, imageSize);
-                        delete[] tarBuf;
-                        newSize += imageSize;
+                        else {
+                            testImageSize = width * height;
+                        }
+                        estimateSize += testImageSize;
                     }
+
+                    if(estimateSize == imageDataSize) {
+                        const QImage oriIm(m_ptOriBuf, width, height, QImage::Format_ARGB32);
+                        while(width/2 >=1 && height/2 >=1) {
+                            width = width/2;
+                            height = height/2;
+                            const QImage im = oriIm.scaledToWidth(width,Qt::SmoothTransformation);
+                            uint8_t* tarBuf = NULL;
+                            if(pixelSize == 0x0c || pixelSize == 0x24) { //dxt5 ATCI 8bpp
+                                uint32_t newW = ((width % 4) ? (width/4+1) : (width /4) ) << 2;
+                                uint32_t newH = ((height % 4) ? (height/4+1) : (height /4) ) << 2;
+                                imageSize = newW * newH;
+                            }
+                            else if(pixelSize == 0x0a || pixelSize == 0x22 || pixelSize == 0x2e) { //dxt3,etc1,atc 4bpp
+                                uint32_t newW = ((width % 4) ? (width/4+1) : (width /4) ) << 2;
+                                uint32_t newH = ((height % 4) ? (height/4+1) : (height /4) ) << 2;
+                                imageSize = (newW * newH)>>1;
+                            }
+                            else {
+                                imageSize = width * height;
+                            }
+                            m_ptParser->invParse(im.bits(), tarBuf, width, height);
+                            br.writeRawData((const char*)tarBuf, imageSize);
+                            delete[] tarBuf;
+                            newSize += imageSize;
+                        }
+                    }
+
+
+
                 }
                 if(modifyWH) {
                     m_ptOrigF.seek(addrWH);
