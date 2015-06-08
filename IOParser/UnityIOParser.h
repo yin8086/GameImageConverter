@@ -9,6 +9,9 @@ class UnityIOParser: public AbstractIOParser {
     AbstractBufferParser *m_ptParser;
     int m_iDefault16bpp;
     uint8_t *m_ptOriBuf;
+
+    static uint32_t getImageSize(uint32_t width, uint32_t height, uint32_t pixelType);
+    QString getImageTypeStr(uint32_t pixelType);
 public:
     UnityIOParser();
 
