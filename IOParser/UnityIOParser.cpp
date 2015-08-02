@@ -259,21 +259,27 @@ void UnityIOParser::setPixels(uint8_t *pSrc) {
                     uint64_t estimateSize = imageSize;
                     uint64_t testImageSize = imageSize;
                     int tW = width, tH = height;
-                    while(tW/2 >=1 && tH/2 >=1) {
-                        tW /= 2;
-                        tH /= 2;
-
+                    while(tW/2 >=1 || tH/2 >=1) {
+                        if(tW != 1)
+                            tW /= 2;
+                        if (tH != 1)
+                            tH /= 2;
                         testImageSize = UnityIOParser::getImageSize(tW, tH, pixelSize);
 
                         estimateSize += testImageSize;
+
+                        if(tW == 1 && tH == 1)
+                            break;
                     }
 
                     if(estimateSize == imageDataSize) {
                         const QImage oriIm(m_ptOriBuf, width, height, QImage::Format_ARGB32);
-                        while(width/2 >=1 && height/2 >=1) {
-                            width = width/2;
-                            height = height/2;
-                            const QImage im = oriIm.scaledToWidth(width,Qt::SmoothTransformation);
+                        while(width/2 >=1 || height/2 >=1) {
+                            if(width != 1)
+                                width = width/2;
+                            if(height != 1)
+                                height = height/2;
+                            const QImage im = oriIm.scaled(QSize(width, height));
                             uint8_t* tarBuf = NULL;
 
                             imageSize = UnityIOParser::getImageSize(width, height, pixelSize);
@@ -283,6 +289,8 @@ void UnityIOParser::setPixels(uint8_t *pSrc) {
                             br.writeRawData((const char*)tarBuf, imageSize);
                             delete[] tarBuf;
                             newSize += imageSize;
+                            if (width == 1 && height == 1)
+                                break;
                         }
                     }
 
