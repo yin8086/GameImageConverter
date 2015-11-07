@@ -10,6 +10,12 @@ QString PVRCT4BufParser::parse(const uint8_t *pSrc, uint8_t *pDst, int width, in
 }
 
 void PVRCT4BufParser::invParse(const uint8_t *pSrc, uint8_t *&rpDst, int width, int height) {
-    rpDst = new uint8_t [(width * height) >> 1];
+    size_t buffer_size = (width * height) >> 1;
+    if(buffer_size < 32) {
+        buffer_size = 32;  // modify buffer size must be >= 32byte
+    }
+
+    rpDst = new uint8_t [buffer_size];
     pvrtc_compress((uint8_t *)pSrc, rpDst, width, height, 0, 1, 1, 0);
 }
+

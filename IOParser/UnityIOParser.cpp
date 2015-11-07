@@ -115,6 +115,11 @@ uint32_t UnityIOParser::getImageSize(uint32_t width, uint32_t height, uint32_t p
         }
         else if(pixelType == 0x21 || pixelType == 0x20) {
             imageSize = (width*height)>>1;
+            // PVRTC4 size must be >= 32bytes
+            // https://developer.apple.com/library/ios/qa/qa1611/_index.html
+            if(imageSize < 32) {
+                imageSize = 32;
+            }
         }
         else if(pixelType == 0x22) {
             imageSize = (width*height)>>1;
