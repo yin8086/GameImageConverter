@@ -162,6 +162,7 @@ QString UnityIOParser::getPixels(uint8_t *&rpDst) {
     uint32_t imageDataSize;
     uint32_t pixelSize;
     br>>m_iWidth>>m_iHeight>>imageDataSize>>pixelSize;
+    qint64 header_end_pos = m_ptOrigF.pos();
 
     try {
         if(m_iWidth > 0 && m_iHeight > 0
@@ -175,7 +176,7 @@ QString UnityIOParser::getPixels(uint8_t *&rpDst) {
                 uint32_t imageSize = UnityIOParser::getImageSize(m_iWidth, m_iHeight, pixelSize);
                 type = UnityIOParser::getImageTypeStr(pixelSize);
 
-                m_ptOrigF.seek(m_ptOrigF.size() - imageDataSize);
+                m_ptOrigF.seek(getDataOffset(header_end_pos, imageDataSize));
 
                 rpDst = new uint8_t[imageSize];
                 br.readRawData((char *)rpDst,imageSize);
@@ -201,6 +202,23 @@ QString UnityIOParser::getPixels(uint8_t *&rpDst) {
 
 }
 
+qint64 UnityIOParser::getDataOffset(qint64 header_end_pos, uint32_t imageDataSize) {
+    qint64 guess_pos = header_end_pos + 0x4 * 10;
+    m_ptOrigF.seek(guess_pos);
+
+    QDataStream br(&m_ptOrigF);
+    br.setByteOrder(QDataStream::LittleEndian);
+
+    uint32_t new_imageDataSize = 0;
+    br>>new_imageDataSize;
+    qint64 test_size = m_ptOrigF.size() - imageDataSize;
+    if (new_imageDataSize == imageDataSize) {
+        return guess_pos + 4;
+    } else {
+        return m_ptOrigF.size() - imageDataSize;
+    }
+}
+
 void UnityIOParser::setPixels(uint8_t *pSrc) {
     if(m_iState != SUCC_STATUS)
         return;
@@ -223,6 +241,7 @@ void UnityIOParser::setPixels(uint8_t *pSrc) {
     qint64 addrWH = 0;
     uint32_t newSize = 0;
     br>>width>>height>>imageDataSize>>pixelSize;
+    qint64 header_end_pos = m_ptOrigF.pos();
 
     if(m_ptOrigF.size() > imageDataSize + 20 && imageDataSize > 0) {
         if ( (1 <= pixelSize && pixelSize <=7 && pixelSize != 6) ||
@@ -252,7 +271,7 @@ void UnityIOParser::setPixels(uint8_t *pSrc) {
             }
 
             if(imageSize >= oriImageSize) {
-                uint64_t addrData = m_ptOrigF.size() - imageDataSize;
+                qint64 addrData = getDataOffset(header_end_pos, imageDataSize);
                 m_ptOrigF.seek(addrData);
 
                 br.writeRawData((const char*)pSrc, imageSize);

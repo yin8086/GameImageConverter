@@ -1,6 +1,7 @@
 #include <QtCore>
 #include "BaseDef.h"
 #include "rg_etc1.h"
+#include "ThreadLogger.h"
 #include "ETC1BufParser.h"
 
 QString ETC1BufParser::parse(const uint8_t *pSrc, uint8_t *pDst, int width, int height) {
@@ -46,6 +47,8 @@ void ETC1BufParser::invParse(const uint8_t *pSrc, uint8_t *&rpDst, int width, in
     rg_etc1::pack_etc1_block_init(); // init
     rg_etc1::etc1_pack_params etcPara;
 
+    unsigned int cur_pos = 0;
+    unsigned int all_pos = (height / 4) * (width / 4);
     for(int posY = 0; posY < height; posY += 4){
         for(int posX = 0; posX < width; posX += 4) {
 
@@ -77,7 +80,11 @@ void ETC1BufParser::invParse(const uint8_t *pSrc, uint8_t *&rpDst, int width, in
             }
 
             rg_etc1::pack_etc1_block(pTile, srcRgba, etcPara);
+            g_cThreadLog.threadPrintf(QString("Process: %1%%\r").
+                                      arg( double(cur_pos * 1.0 / all_pos) * 100)
+                                      );
             pTile += 8;
+            cur_pos += 1;
         }
     }
 }

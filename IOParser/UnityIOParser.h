@@ -11,6 +11,8 @@ class UnityIOParser: public AbstractIOParser {
     uint8_t *m_ptOriBuf;
 
     static uint32_t getImageSize(uint32_t width, uint32_t height, uint32_t pixelType);
+
+    qint64 getDataOffset(qint64 header_end_pos, uint32_t imageDataSize);
     QString getImageTypeStr(uint32_t pixelType);
 public:
     UnityIOParser();
